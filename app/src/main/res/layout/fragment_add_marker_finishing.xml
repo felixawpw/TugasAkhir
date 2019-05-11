@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.AddMarkerFinishingFragment"
+    android:background="@color/material_purple_300">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+                android:id="@+id/icon_friends"
+                style="@style/TextViewAppearance.Title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/material_icon_account"
+                android:textColor="@color/main_color_grey_300"
+                android:textSize="22sp"
+                tools:ignore="DuplicateIds" />
+
+            <com.felixawpw.indoormaps.view.FloatLabeledEditText
+                android:id="@+id/fragment_add_marker_finishing_textName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:fletFloatingHint="Marker Description"
+                app:fletHintTextColor="@color/main_color_grey_300"
+                app:fletSingleLine="true"
+                app:fletTextBackground="@drawable/edit_text_background_accent"
+                app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+                android:id="@+id/icon_friends"
+                style="@style/TextViewAppearance.Title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/material_icon_account"
+                android:textColor="@color/main_color_grey_300"
+                android:textSize="22sp"
+                tools:ignore="DuplicateIds" />
+
+            <com.felixawpw.indoormaps.view.FloatLabeledEditText
+                android:id="@+id/fragment_add_marker_finishing_textDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:fletFloatingHint="Marker Description"
+                app:fletHintTextColor="@color/main_color_grey_300"
+                app:fletSingleLine="true"
+                app:fletTextBackground="@drawable/edit_text_background_accent"
+                app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+                android:id="@+id/icon_friends"
+                style="@style/TextViewAppearance.Title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/material_icon_account"
+                android:textColor="@color/main_color_grey_300"
+                android:textSize="22sp"
+                tools:ignore="DuplicateIds" />
+
+            <com.felixawpw.indoormaps.view.FloatLabeledEditText
+                android:id="@+id/fragment_add_marker_finishing_textType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:fletFloatingHint="Marker Description"
+                app:fletHintTextColor="@color/main_color_grey_300"
+                app:fletSingleLine="true"
+                app:fletTextBackground="@drawable/edit_text_background_accent"
+                app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:color/white" />
+
+        <com.felixawpw.indoormaps.font.RobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Marker on Map"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:color/white" />
+
+        <com.felixawpw.indoormaps.view.PinView
+            android:id="@+id/fragment_add_marker_finishing_imageMapOrigin"
+            style="@style/mainPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:id="@+id/fragment_add_marker_finishing_layoutTargetedMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/white" />
+
+            <com.felixawpw.indoormaps.font.RobotoTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Targeted Map for Stair End"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/white" />
+
+            <com.felixawpw.indoormaps.view.PinView
+                android:id="@+id/fragment_add_marker_finishing_imageMapTarget"
+                style="@style/mainPanel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

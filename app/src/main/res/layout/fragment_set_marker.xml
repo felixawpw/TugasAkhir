@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_set_marker_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/material_purple_300">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+                android:id="@+id/icon_friends"
+                style="@style/TextViewAppearance.Title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/material_icon_account"
+                android:textColor="@color/main_color_grey_300"
+                android:textSize="22sp"
+                tools:ignore="DuplicateIds" />
+
+            <com.felixawpw.indoormaps.view.FloatLabeledEditText
+                android:id="@+id/fragment_set_marker_nama"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:fletFloatingHint="Marker Name"
+                app:fletHintTextColor="@color/main_color_grey_300"
+                app:fletSingleLine="true"
+                app:fletTextBackground="@drawable/edit_text_background_accent"
+                app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+                android:id="@+id/icon_friends"
+                style="@style/TextViewAppearance.Title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/material_icon_account"
+                android:textColor="@color/main_color_grey_300"
+                android:textSize="22sp"
+                tools:ignore="DuplicateIds" />
+
+            <com.felixawpw.indoormaps.view.FloatLabeledEditText
+                android:id="@+id/fragment_set_marker_deskripsi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:fletFloatingHint="Marker Description"
+                app:fletHintTextColor="@color/main_color_grey_300"
+                app:fletSingleLine="true"
+                app:fletTextBackground="@drawable/edit_text_background_accent"
+                app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+                android:id="@+id/icon_friends"
+                style="@style/TextViewAppearance.Title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/material_icon_account"
+                android:textColor="@color/main_color_grey_300"
+                android:textSize="22sp"
+                tools:ignore="DuplicateIds" />
+
+            <RadioGroup
+                android:id="@+id/fragment_set_marker_radiogroup_marker_type"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation='horizontal'>
+
+                <RadioButton
+                    android:id="@+id/fragment_set_marker_radio_marker_type_1"
+                    style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:text="Public Places"/>
+
+                <RadioButton
+                    android:id="@+id/fragment_set_marker_radio_marker_type_2"
+                    style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:text="Upstair"/>
+
+                <RadioButton
+                    android:id="@+id/fragment_set_marker_radio_marker_type_3"
+                    style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Downstair"
+                    android:layout_weight="1"/>
+
+            </RadioGroup>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:color/white" />
+
+        <com.felixawpw.indoormaps.font.RobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Click map to create marker."
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <com.felixawpw.indoormaps.view.PinView
+                android:id="@+id/fragment_set_marker_imageMap"
+                style="@style/mainPanel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

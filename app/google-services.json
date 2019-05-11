@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "458946900129",
+    "firebase_url": "https://ta-felix.firebaseio.com",
+    "project_id": "ta-felix",
+    "storage_bucket": "ta-felix.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458946900129:android:128eb12272ca62fd",
+        "android_client_info": {
+          "package_name": "com.felixawpw.indoormaps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "458946900129-u433jisv9r3pskgdrdegrmaj53jas8ke.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.felixawpw.indoormaps",
+            "certificate_hash": "cb177f966b49948011a09eee460796a8161d5e13"
+          }
+        },
+        {
+          "client_id": "458946900129-tqvsop8aqdgbcnkiv6bak4f2unj0dkci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZB9jTwPwbrubkHoeDNtoC_bIKnKKeboY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458946900129-tqvsop8aqdgbcnkiv6bak4f2unj0dkci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

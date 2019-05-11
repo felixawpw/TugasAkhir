@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddNewMapActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+            android:id="@+id/icon_friends"
+            style="@style/TextViewAppearance.Title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/material_icon_account"
+            android:textColor="@color/main_color_grey_300"
+            android:textSize="22dp"
+            tools:ignore="DuplicateIds" />
+
+        <com.felixawpw.indoormaps.view.FloatLabeledEditText
+            android:id="@+id/activity_add_new_map_nama"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:fletFloatingHint="Map Name"
+            app:fletHintTextColor="@color/main_color_grey_300"
+            app:fletSingleLine="true"
+            app:fletTextBackground="@drawable/edit_text_background_accent"
+            app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+            android:id="@+id/icon_friends"
+            style="@style/TextViewAppearance.Title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/material_icon_account"
+            android:textColor="@color/main_color_grey_300"
+            android:textSize="22dp"
+            tools:ignore="DuplicateIds" />
+
+        <com.felixawpw.indoormaps.view.FloatLabeledEditText
+            android:id="@+id/activity_add_new_map_deskripsi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:fletFloatingHint="Map Description"
+            app:fletHintTextColor="@color/main_color_grey_300"
+            app:fletSingleLine="true"
+            app:fletTextBackground="@drawable/edit_text_background_accent"
+            app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+    </LinearLayout>
+
+    <com.felixawpw.indoormaps.view.siv.ShapeImageView
+        android:id="@+id/activity_add_new_map_imageMap"
+        style="@style/ImageViewStyle"
+        android:layout_width="360dp"
+        android:layout_height="300dp"
+        android:layout_margin="30dp"
+        app:siShape="@raw/b"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <com.felixawpw.indoormaps.font.RobotoTextView
+        android:id="@+id/robotoTextView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fill numbers below in metric unit"
+        android:textSize="18dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/activity_add_new_map_textHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Height"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/activity_add_new_map_textLengthScale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Length Scale"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/activity_add_new_map_textWidthScale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Width Scale"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/activity_add_new_map_buttonAddMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:text="Button" />
+
+
+</LinearLayout>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddNewPlacesActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <fragment android:id="@+id/activity_add_new_place_autoCompleteFragment"
+        android:layout_width="0dp"
+        android:layout_weight="0"
+        android:layout_height="0dp"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+            android:id="@+id/icon_friends"
+            style="@style/TextViewAppearance.Title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/material_icon_account"
+            android:textColor="@color/main_color_grey_300"
+            android:textSize="22dp"
+            tools:ignore="DuplicateIds" />
+
+        <com.felixawpw.indoormaps.view.FloatLabeledEditText
+            android:id="@+id/activity_add_new_place_textNama"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:fletFloatingHint="Location Name"
+            app:fletHintTextColor="@color/main_color_grey_300"
+            app:fletSingleLine="true"
+            app:fletTextBackground="@drawable/edit_text_background_accent"
+            app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        >
+
+        <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+            android:id="@+id/icon_friends"
+            style="@style/TextViewAppearance.Title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/material_icon_point_empty"
+            android:textColor="@color/main_color_grey_300"
+            android:textSize="22dp"
+            tools:ignore="DuplicateIds" />
+
+        <com.felixawpw.indoormaps.view.FloatLabeledEditText
+            android:id="@+id/activity_add_new_place_textAlamat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:fletFloatingHint="Type address to search a location"
+            app:fletHintTextColor="@color/main_color_grey_300"
+            app:fletSingleLine="true"
+            app:fletTextBackground="@drawable/edit_text_background_accent"
+            app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+
+    </LinearLayout>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/activity_add_new_place_mapView"
+        android:layout_width="match_parent"
+        android:layout_height="242dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"/>
+
+    <Button
+        android:id="@+id/activity_add_new_place_buttonAddPlace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:text="ADD PLACE" />
+
+
+</LinearLayout>
