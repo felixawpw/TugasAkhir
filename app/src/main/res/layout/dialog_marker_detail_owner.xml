@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/cardview_light_background"
-    tools:context=".fragment.MarkerDetailPopupFragment">
+    android:background="@color/cardview_light_background">
 
     <!-- TODO: Update blank fragment layout -->
 
     <com.felixawpw.indoormaps.font.RobotoTextView
-        android:id="@+id/fragment_marker_detail_popup_text_name"
+        android:id="@+id/dialog_marker_detail_owner_text_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="24sp"
@@ -21,7 +20,7 @@
         android:layout_marginRight="8dp"/>
 
     <com.felixawpw.indoormaps.font.RobotoTextView
-        android:id="@+id/fragment_marker_detail_popup_text_type"
+        android:id="@+id/dialog_marker_detail_owner_text_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="12sp"
@@ -41,7 +40,7 @@
 
 
     <com.felixawpw.indoormaps.font.RobotoTextView
-        android:id="@+id/fragment_marker_detail_popup_text_description"
+        android:id="@+id/dialog_marker_detail_owner_text_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16dp"
@@ -50,17 +49,40 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"/>
 
-    <Button
-        android:id="@+id/fragment_marker_detail_popup_button_direction"
-        android:background="@drawable/button_oval"
-        android:text="Direction"
-        android:textColor="@color/white"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_marker_detail_owner_button_delete"
+            android:background="@drawable/button_oval_warning"
+            android:text="Delete"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
         />
+
+        <Button
+            android:id="@+id/dialog_marker_detail_owner_button_edit"
+            android:background="@drawable/button_oval"
+            android:text="Edit"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            />
+
+    </LinearLayout>
+
 
 </LinearLayout>

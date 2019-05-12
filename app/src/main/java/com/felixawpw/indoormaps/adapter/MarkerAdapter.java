@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.felixawpw.indoormaps.AddNewPlacesActivity;
 import com.felixawpw.indoormaps.MapActivity;
+import com.felixawpw.indoormaps.OwnerMapActivity;
 import com.felixawpw.indoormaps.R;
 import com.felixawpw.indoormaps.mirror.Marker;
 import com.felixawpw.indoormaps.model.MarkerModel;
@@ -114,6 +115,8 @@ public class MarkerAdapter extends ArrayAdapter<MarkerModel> implements View.OnC
 		int position = (Integer) v.getTag(R.id.map_activity_marker_id);
         if (activity instanceof MapActivity)
             ((MapActivity)activity).showMarkerDetailDialog(position);
+        else if (activity instanceof OwnerMapActivity)
+			((OwnerMapActivity)activity).showMarkerDetailDialog(position);
 	}
 
 

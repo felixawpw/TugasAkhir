@@ -100,6 +100,7 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
                 postData.put("nama", textNama.getText());
                 postData.put("user_id", "1"); //Not finished
                 postData.put("google_maps_id", selectedPlace.getId());
+                postData.put("google_maps_address", selectedPlace.getAddress());
                 VolleyServices.getInstance(getApplicationContext()).httpRequest(
                         Request.Method.POST,
                         POST_NEW_PLACE_DATA_ADDRESS,
@@ -143,7 +144,7 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
                 getSupportFragmentManager().findFragmentById(R.id.activity_add_new_place_autoCompleteFragment);
 
 // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG));
 // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setCountry("ID");
 
@@ -165,7 +166,7 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
 
 
     public void initiateAutoComplete() {
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.OVERLAY, fields)
                 .build(this);
@@ -187,8 +188,7 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
                         .title(place.getName()));
 
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15.0f));
-
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getAddress());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);

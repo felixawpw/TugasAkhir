@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.felixawpw.indoormaps.AddNewMapActivity;
 import com.felixawpw.indoormaps.AddedPlaceDetailsActivity;
 import com.felixawpw.indoormaps.MapOwnerActivity;
+import com.felixawpw.indoormaps.OwnerMapActivity;
 import com.felixawpw.indoormaps.R;
 import com.felixawpw.indoormaps.mirror.Map;
 import com.felixawpw.indoormaps.mirror.Tenant;
@@ -99,7 +100,7 @@ public class ImageGallerySubcategoryAdapter extends BaseAdapter implements View.
 				clickedMap = model.getMap();
 		}
 
-		Intent intent = new Intent(activity, MapOwnerActivity.class);
+		Intent intent = new Intent(activity, OwnerMapActivity.class);
 		intent.putExtra("mapId", clickedMap.getId());
 		intent.putExtra("nama", clickedMap.getNama());
 		intent.putExtra("deskripsi", clickedMap.getDeskripsi());

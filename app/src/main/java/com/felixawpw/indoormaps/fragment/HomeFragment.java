@@ -125,13 +125,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         Log.d(TAG, "Permission Access Fine Location = " + Permissions.PERMISSION_ACCESS_FINE_LOCATION);
         Log.d(TAG, "Permission Read External Stroage = " + Permissions.PERMISSION_READ_EXTERNAL_STORAGE);
             //Uncomment
-//        if (Permissions.PERMISSION_ACCESS_FINE_LOCATION)
-//        {
-//            PlacesServices.getInstance().getDeviceLocation(googleMap, getActivity());
-//            PlacesServices.getInstance().getLikelihood(getActivity(), getString(R.string.geolocation_api_key), HomeFragment.this);
-//        }
-//        else
-//            Permissions.requestPermissions(getActivity());
+        if (Permissions.PERMISSION_ACCESS_FINE_LOCATION)
+        {
+            PlacesServices.getInstance().getDeviceLocation(googleMap, getActivity());
+            PlacesServices.getInstance().getLikelihood(getActivity(), getString(R.string.geolocation_api_key), HomeFragment.this);
+        }
+        else
+            Permissions.requestPermissions(getActivity());
     }
 
     public void onButtonPressed(Uri uri) {

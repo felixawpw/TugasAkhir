@@ -20,10 +20,18 @@ import android.widget.ListView;
 import com.android.volley.Request;
 import com.felixawpw.indoormaps.R;
 import com.felixawpw.indoormaps.adapter.GoogleCardsTravelAdapter;
+import com.felixawpw.indoormaps.adapter.TenantAdapter;
 import com.felixawpw.indoormaps.mirror.Tenant;
 import com.felixawpw.indoormaps.model.TenantModel;
 import com.felixawpw.indoormaps.services.VolleyServices;
+import com.google.android.libraries.places.api.Places;
+import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.ScaleInAnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.SwingLeftInAnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.SwingRightInAnimationAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.SwipeDismissAdapter;
 
@@ -36,14 +44,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PlacesFragment extends Fragment implements OnDismissCallback {
+public class PlacesFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public static final String TAG = PlacesFragment.class.getSimpleName();
     private static final int INITIAL_DELAY_MILLIS = 300;
 
-    private GoogleCardsTravelAdapter mGoogleCardsAdapter;
+    private TenantAdapter mTenantListAdapter;
     Context context;
     private EditText searchField;
+    DynamicListView listView;
 
     public PlacesFragment() {
 
@@ -65,6 +74,7 @@ public class PlacesFragment extends Fragment implements OnDismissCallback {
             case GET_PLACES_DATA_BY_SEARCH:
                 try {
                     if (response.getBoolean("message")) {
+                        mTenantListAdapter.clear();
                         Log.i(TAG, "Response = " + response.toString());
                         ArrayList<TenantModel> list = new ArrayList<>();
                         JSONArray tenants = response.getJSONArray("data");
@@ -77,8 +87,8 @@ public class PlacesFragment extends Fragment implements OnDismissCallback {
                                     R.string.fontello_heart_empty,
                                     tenant));
                         }
-                        list.add(new TenantModel(0, "http://chittagongit.com//images/new-location-icon/new-location-icon-4.jpg", "Add new place", R.string.fontello_heart_empty));
-                        mGoogleCardsAdapter.addAll(list);
+                        mTenantListAdapter.addAll(list);
+                        appearanceAnimate(0);
                     }
                 } catch (JSONException ex) {
                     Log.e(TAG, "Error handling response : " + ex.getMessage());
@@ -144,8 +154,8 @@ public class PlacesFragment extends Fragment implements OnDismissCallback {
                         DELAY
                 );
 
-                if (mGoogleCardsAdapter != null) {
-                    mGoogleCardsAdapter.getFilter().filter(s);
+                if (mTenantListAdapter != null) {
+                    mTenantListAdapter.getFilter().filter(s);
                 } else {
                     Log.d(TAG, "no filter availible");
                 }
@@ -154,43 +164,68 @@ public class PlacesFragment extends Fragment implements OnDismissCallback {
 
 
 
-        ListView listView = (ListView) v.findViewById(R.id.fragment_places_list_view);
-        mGoogleCardsAdapter = new GoogleCardsTravelAdapter(context, new ArrayList<TenantModel>());
+        listView = v.findViewById(R.id.fragment_places_list_view);
+        mTenantListAdapter = new TenantAdapter(context, new ArrayList<TenantModel>(), PlacesFragment.this);
         //Add new place card
 
-        SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(
-                new SwipeDismissAdapter(mGoogleCardsAdapter, this));
-        swingBottomInAnimationAdapter.setAbsListView(listView);
+//        SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(
+//                new SwipeDismissAdapter(mTenantListAdapter, this));
+//        swingBottomInAnimationAdapter.setAbsListView(listView);
+//
+//        assert swingBottomInAnimationAdapter.getViewAnimator() != null;
+//        swingBottomInAnimationAdapter.getViewAnimator().setInitialDelayMillis(
+//                INITIAL_DELAY_MILLIS);
+//
+//        listView.setClipToPadding(false);
+//        listView.setDivider(null);
+//        Resources r = getResources();
+//        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+//                8, r.getDisplayMetrics());
+//        listView.setDividerHeight(px);
+//        listView.setFadingEdgeLength(0);
+//        listView.setFitsSystemWindows(true);
+//        px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12,
+//                r.getDisplayMetrics());
+//        listView.setPadding(px, px, px, px);
+//        listView.setScrollBarStyle(ListView.SCROLLBARS_OUTSIDE_OVERLAY);
+//        listView.setAdapter(swingBottomInAnimationAdapter);
 
-        assert swingBottomInAnimationAdapter.getViewAnimator() != null;
-        swingBottomInAnimationAdapter.getViewAnimator().setInitialDelayMillis(
-                INITIAL_DELAY_MILLIS);
-
-        listView.setClipToPadding(false);
-        listView.setDivider(null);
-        Resources r = getResources();
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                8, r.getDisplayMetrics());
-        listView.setDividerHeight(px);
-        listView.setFadingEdgeLength(0);
-        listView.setFitsSystemWindows(true);
-        px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12,
-                r.getDisplayMetrics());
-        listView.setPadding(px, px, px, px);
-        listView.setScrollBarStyle(ListView.SCROLLBARS_OUTSIDE_OVERLAY);
-        listView.setAdapter(swingBottomInAnimationAdapter);
-
-        addPlacesCards();
+//        addPlacesCards();
 
         return v;
     }
 
+    private void appearanceAnimate(int key) {
+        AnimationAdapter animAdapter;
+        switch (key) {
+            default:
+            case 0:
+                animAdapter = new AlphaInAnimationAdapter(mTenantListAdapter);
+                break;
+            case 1:
+                animAdapter = new ScaleInAnimationAdapter(mTenantListAdapter);
+                break;
+            case 2:
+                animAdapter = new SwingBottomInAnimationAdapter(mTenantListAdapter);
+                break;
+            case 3:
+                animAdapter = new SwingLeftInAnimationAdapter(mTenantListAdapter);
+                break;
+            case 4:
+                animAdapter = new SwingRightInAnimationAdapter(mTenantListAdapter);
+                break;
+        }
+        animAdapter.setAbsListView(listView);
+        listView.setAdapter(animAdapter);
+    }
+
+
     public void addPlacesCards() {
-        mGoogleCardsAdapter.clear();
+        mTenantListAdapter.clear();
         ArrayList<TenantModel> list = new ArrayList<>();
         //Default card
         list.add(new TenantModel(0, "http://chittagongit.com//images/new-location-icon/new-location-icon-4.jpg", "Add new place", R.string.fontello_heart_empty));
-        mGoogleCardsAdapter.addAll(list);
+        mTenantListAdapter.addAll(list);
     }
 
     @Override
@@ -199,14 +234,6 @@ public class PlacesFragment extends Fragment implements OnDismissCallback {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onDismiss(@NonNull final ViewGroup listView,
-                          @NonNull final int[] reverseSortedPositions) {
-        for (int position : reverseSortedPositions) {
-            mGoogleCardsAdapter.remove(mGoogleCardsAdapter.getItem(position));
-        }
     }
 
     public interface OnFragmentInteractionListener {

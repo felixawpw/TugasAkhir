@@ -20,6 +20,7 @@ import com.felixawpw.indoormaps.AddNewPlacesActivity;
 import com.felixawpw.indoormaps.AddedPlaceDetailsActivity;
 import com.felixawpw.indoormaps.AddedPlacesActivity;
 import com.felixawpw.indoormaps.MapActivity;
+import com.felixawpw.indoormaps.OwnerMapActivity;
 import com.felixawpw.indoormaps.fragment.AddMarkerDataFragment;
 import com.felixawpw.indoormaps.fragment.MapListOwnerFragment;
 import com.felixawpw.indoormaps.fragment.MapViewFragment;
@@ -51,7 +52,7 @@ public class VolleyServices {
     private RequestQueue requestQueue;
 //    private ImageLoader imageLoader;
     private static Context ctx;
-    public static final String ADDRESS_DEFAULT = "http://192.168.0.18/";
+    public static final String ADDRESS_DEFAULT = "http://192.168.1.101/";
     public static final String TAG = VolleyServices.class.getSimpleName();
 
     public static final String LOAD_MAP_IMAGE_BY_ID = ADDRESS_DEFAULT + "external/map/processed_map/download/";
@@ -129,6 +130,8 @@ public class VolleyServices {
                             ((AddMarkerWizardActivity)activity).handleResponse(requestId, response);
                         } else if (activity instanceof MapListOwnerFragment) {
                             ((MapListOwnerFragment)activity).handleResponse(requestId, response);
+                        } else if (activity instanceof OwnerMapActivity) {
+                            ((OwnerMapActivity)activity).handleResponse(requestId, response);
                         }
                     }
                 }, new Response.ErrorListener() {

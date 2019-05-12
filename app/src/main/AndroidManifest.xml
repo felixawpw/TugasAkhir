@@ -53,6 +53,9 @@
         <activity android:name=".MapActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"
             />
+        <activity android:name=".OwnerMapActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

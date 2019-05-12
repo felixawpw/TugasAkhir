@@ -9,8 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_height="48dp"
         android:background="@color/main_color_grey_100"
         android:gravity="center_vertical">
 
@@ -46,11 +45,19 @@
             tools:ignore="SpUsage" />
     </LinearLayout>
 
-    <include
-        android:id="@+id/fragment_places_list_view"
-        layout="@layout/list_view"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="15"/>
+    <View
+        android:id="@+id/activity_map_view_element"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/main_color_500"/>
 
+    <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+        android:id="@+id/fragment_places_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 </LinearLayout>
