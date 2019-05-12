@@ -201,4 +201,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
 
+    <item type="id" name="map_activity_marker_id" />
+    <item type="id" name="map_activity_holder" />
 </resources>

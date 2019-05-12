@@ -35,6 +35,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.android.volley.Request;
+import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.felixawpw.indoormaps.adapter.DefaultAdapter;
 import com.felixawpw.indoormaps.adapter.MarkerAdapter;
@@ -47,6 +48,10 @@ import com.felixawpw.indoormaps.fragment.MapViewFragment;
 import com.felixawpw.indoormaps.mirror.Map;
 import com.felixawpw.indoormaps.mirror.Marker;
 import com.felixawpw.indoormaps.model.MarkerModel;
+import com.felixawpw.indoormaps.navigation.Agent;
+import com.felixawpw.indoormaps.navigation.GridMap;
+import com.felixawpw.indoormaps.navigation.ImageCustom;
+import com.felixawpw.indoormaps.navigation.ProcessedImage;
 import com.felixawpw.indoormaps.services.LoadImage;
 import com.felixawpw.indoormaps.services.VolleyServices;
 import com.felixawpw.indoormaps.util.DummyContent;
@@ -85,6 +90,8 @@ public class MapActivity extends AppCompatActivity {
     EditText searchField;
     MarkerAdapter mMarkerListAdapter;
     private ArrayList<Marker> markerData;
+
+    PointF startDummy = new PointF(538, 248);
 
     public Marker getMarkerDataByIndex(int position) {
         return markerData.get(position);
@@ -144,7 +151,7 @@ public class MapActivity extends AppCompatActivity {
                             e.getY());
                     Log.i(TAG, "Selected plan index = " + selectedPlanIndex);
                     Marker nearestMarker = findNearestMarker(sCoord);
-                    showMarkerDetailDialog(nearestMarker);
+                    showMarkerDetailDialog(nearestMarker.getId());
                 }
                 return true;
             }
@@ -185,10 +192,21 @@ public class MapActivity extends AppCompatActivity {
      //<editor-fold desc="VOLLEY SERVICES" defaultstate="collapsed">
         public static final int REQUEST_MAPS_FROM_SERVER = 1;
         public static final int GET_ALL_MARKERS_DATA = 2;
+        public static final int GET_PROCESSED_MAP_DATA = 3;
         public static final String GET_ALL_MARKERS_DATA_ADDRESS = VolleyServices.ADDRESS_DEFAULT + "external/marker/by_tenant_id/";
         public static final String REQUEST_MAPS_BY_TENANT_GID_ADDRESS = VolleyServices.ADDRESS_DEFAULT + "external/tenant/map/";
+        public static final String GET_PROCESSED_MAP_DATA_ADDRESS = VolleyServices.ADDRESS_DEFAULT + "external/map/map_array_data/";
         public void requestMapsFromServer() {
             VolleyServices.getInstance(context).httpRequest(Request.Method.GET,  REQUEST_MAPS_BY_TENANT_GID_ADDRESS + MapActivity.placeId, context, MapActivity.this, REQUEST_MAPS_FROM_SERVER, null);
+        }
+
+        public void loadArrayMapData(Map map) {
+            VolleyServices.getInstance(context).httpRequest(Request.Method.GET,
+                    GET_PROCESSED_MAP_DATA_ADDRESS + map.getId(),
+                    context,
+                    MapActivity.this,
+                    GET_PROCESSED_MAP_DATA,
+                    null);
         }
 
         public void handleResponse(int requestName, JSONObject response) {
@@ -201,6 +219,8 @@ public class MapActivity extends AppCompatActivity {
 
                         for (int i = 0; i < mapsJson.length(); i++) {
                             maps[i] = new Map(mapsJson.getJSONObject(i));
+                            loadMapImage(maps[i]);
+                            loadArrayMapData(maps[i]);
                         }
 
                         createFloorPlansButton(maps);
@@ -217,7 +237,7 @@ public class MapActivity extends AppCompatActivity {
                                 for (int i = 0; i < tenants.length(); i++) {
                                     Marker marker = new Marker(tenants.getJSONObject(i));
                                     markerData.add(marker);
-                                    list.add(new MarkerModel(i+1,
+                                    list.add(new MarkerModel(i,
                                             "http://chittagongit.com//images/new-location-icon/new-location-icon-4.jpg",
                                             marker.getName(),
                                             R.string.fontello_heart_empty,
@@ -230,7 +250,25 @@ public class MapActivity extends AppCompatActivity {
                             Log.e(TAG, "Error handling response : " + ex.getMessage());
                         }
                         break;
+                    case GET_PROCESSED_MAP_DATA:
+                        boolean status = response.getBoolean("status");
+                        int mapId = response.getInt("map_id");
+                        String data = response.getString("data");
 
+                        String[] token = data.split("\n");
+                        int[][] mapData = new int[token.length][];
+                        for (int i = 0; i < token.length; i++) {
+                            char[] charArray = token[i].toCharArray();
+                            mapData[i] = new int[charArray.length];
+                            for (int j =0 ; j < charArray.length; j++) {
+                                mapData[i][j] = charArray[j] == '1' ? 1 : 0 ;
+                            }
+                        }
+                        Map getMap = searchMapsById(mapId);
+                        getMap.setArrayData(mapData);
+
+                        Log.d(TAG, "Get Array Data = " + getMap.getArrayData().length + " : " + getMap.getArrayData()[0].length);
+                        break;
                     default:
                         break;
                 }
@@ -238,6 +276,26 @@ public class MapActivity extends AppCompatActivity {
                 Log.e(TAG, ex.getMessage());
                 ex.printStackTrace();
             }
+        }
+
+        public Map searchMapsById(int id) {
+            for (int i = 0; i < maps.length; i++) {
+                if (maps[i].getId() == id)
+                    return maps[i];
+            }
+            return null;
+        }
+
+        public Marker searchMarkerById(int id) {
+            for (Marker mark : markerData) {
+                if (mark.getId() == id)
+                    return mark;
+            }
+            return null;
+        }
+
+        public Marker searchMarkerByPosition(int position) {
+            return markerData.get(position);
         }
 
         public void getAllMarkers() {
@@ -259,6 +317,14 @@ public class MapActivity extends AppCompatActivity {
     Button prevSelectedPlan = null;
     int selectedPlanIndex = 0;
     Button planButtons[];
+
+    public void loadMapImage(Map map) {
+        LoadImage loadImage = new LoadImage(null, map);
+        loadImage.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + map.getId());
+    }
+
+
+
     public void createFloorPlansButton(Map[] plans) {
         int index = 0;
         planButtons = new Button[plans.length];
@@ -277,7 +343,7 @@ public class MapActivity extends AppCompatActivity {
                 button.setBackground(drawable);
 
                 prevSelectedPlan = button;
-                LoadImage loadImage = new LoadImage(imagePlan, true);
+                LoadImage loadImage = new LoadImage(imagePlan, plan);
                 loadImage.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + plan.getId());
             }
             else
@@ -343,9 +409,10 @@ public class MapActivity extends AppCompatActivity {
         mDynamicListView.setAdapter(animAdapter);
     }
 
-    public void showMarkerDetailDialog(Marker selectedMarker) {
-        Marker marker = markerData.get(markerData.indexOf(selectedMarker));
 
+    public void showMarkerDetailDialog(int id) {
+        final Marker marker = searchMarkerById(id);
+        Log.i(TAG, "Clicked marker id = " + marker.getId());
         View v = getLayoutInflater().inflate(R.layout.fragment_marker_detail_popup, null);
         RobotoTextView textName = v.findViewById(R.id.fragment_marker_detail_popup_text_name);
         RobotoTextView textDescription = v.findViewById(R.id.fragment_marker_detail_popup_text_description);
@@ -367,6 +434,19 @@ public class MapActivity extends AppCompatActivity {
         fbDialogue.setContentView(v);
         fbDialogue.setCancelable(true);
 
+        buttonDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (maps[0].getCustomImage() == null || maps[0].getArrayData() == null)
+                    Log.i(TAG, "Its not finished loading yet");
+                else {
+                    navigate(maps[0], startDummy, marker);
+                    fbDialogue.hide();
+                }
+            }
+        });
+
+
         fbDialogue.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         fbDialogue.getWindow().setGravity(Gravity.BOTTOM);
@@ -381,6 +461,13 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    public void navigate(Map map, PointF start, Marker end) {
+        ImageCustom imageData = map.getCustomImage();
+        ProcessedImage pImage = new ProcessedImage(imageData, map.getArrayData());
+        GridMap gridMap = new GridMap(pImage, imageData);
+        Agent agent = new Agent(gridMap, startDummy, imagePlan, maps);
+        agent.execute(end);
+    }
 
     //<editor-fold desc="COMMENTED">
     /*

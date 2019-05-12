@@ -1,5 +1,6 @@
 package com.felixawpw.indoormaps.navigation;
 
+import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 
 import com.felixawpw.indoormaps.mirror.Map;
@@ -7,38 +8,40 @@ import com.felixawpw.indoormaps.mirror.Map;
 import java.io.File;
 
 public class ImageCustom {
-    Map map;
-    ImageDecoder.ImageInfo imageInfo;
+    Bitmap image;
 
     public ImageCustom() {
 
     }
 
-    public ImageCustom(File imageFile) throws Exception {
-        this.imageFile = imageFile;
+    public ImageCustom(Bitmap image) {
+        this.image = image;
     }
 
     public int getWidth() {
-        return imageInfo.getWidth();
+        return image.getWidth();
     }
 
     public int getHeight() {
-        return imageInfo.getHeight();
+        return image.getHeight();
     }
 
-    public float getHeightCM() {
-        return imageInfo.getPhysicalHeightInch() * 2.54f;
+//    public float getHeightCM() {
+//        return image.getPhysicalHeightInch() * 2.54f;
+//    }
+//
+//    public float getWidthCM() {
+//        return image.getPhysicalWidthInch() * 2.54f;
+//    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+    public Bitmap getImage() {
+        return image;
     }
 
-    public float getWidthCM() {
-        return imageInfo.getPhysicalWidthInch() * 2.54f;
-    }
-
-    public File getImageFile() {
-        return imageFile;
-    }
-
-    public ImageInfo getImageInfo() {
-        return imageInfo;
-    }
+//    public ImageInfo getImageInfo() {
+//        return imageInfo;
+//    }
 }

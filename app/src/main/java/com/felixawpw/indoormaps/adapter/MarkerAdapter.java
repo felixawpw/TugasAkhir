@@ -3,6 +3,7 @@ package com.felixawpw.indoormaps.adapter;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
@@ -17,8 +18,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.felixawpw.indoormaps.AddNewPlacesActivity;
 import com.felixawpw.indoormaps.MapActivity;
 import com.felixawpw.indoormaps.R;
+import com.felixawpw.indoormaps.mirror.Marker;
 import com.felixawpw.indoormaps.model.MarkerModel;
 import com.felixawpw.indoormaps.model.TenantModel;
 import com.felixawpw.indoormaps.util.ImageUtil;
@@ -31,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MarkerAdapter extends ArrayAdapter<MarkerModel> implements Swappable, UndoAdapter, OnDismissCallback {
+public class MarkerAdapter extends ArrayAdapter<MarkerModel> implements View.OnClickListener{
 
 	private Context mContext;
 	Activity activity;
@@ -77,27 +80,24 @@ public class MarkerAdapter extends ArrayAdapter<MarkerModel> implements Swappabl
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		final ViewHolder holder;
+		final MarkerModel dm = mMarkerModelList.get(position);
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.list_item_default, parent, false);
 			holder = new ViewHolder();
 			holder.image = (ImageView) convertView.findViewById(R.id.image);
 			holder.text = (TextView) convertView.findViewById(R.id.text);
 			holder.icon = (TextView) convertView.findViewById(R.id.icon);
-			convertView.setTag(holder);
+			holder.layoutMain = (LinearLayout) convertView.findViewById(R.id.list_item_default_main_layout);
+			holder.layoutMain.setTag(position);
+			holder.marker = dm.getMarker();
 
-			convertView.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (activity instanceof MapActivity)
-						((MapActivity)activity).showMarkerDetailDialog(((MapActivity)activity).getMarkerDataByIndex(position));
-				}
-			});
+			convertView.setTag(R.id.map_activity_holder, holder);
 		} else {
-			holder = (ViewHolder) convertView.getTag();
+			holder = (ViewHolder) convertView.getTag(R.id.map_activity_holder);
 		}
-		
-		MarkerModel dm = mMarkerModelList.get(position);
-		
+
+		convertView.setTag(R.id.map_activity_marker_id, dm.getMarker().getId());
+		convertView.setOnClickListener(this);
 		ImageUtil.displayRoundImage(holder.image, dm.getImageURL(), null);
 		holder.text.setText(dm.getText());
 		if (mShouldShowDragAndDropIcon) {
@@ -107,38 +107,22 @@ public class MarkerAdapter extends ArrayAdapter<MarkerModel> implements Swappabl
 		}
 		return convertView;
 	}
-	
-	
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		int position = (Integer) v.getTag(R.id.map_activity_marker_id);
+        if (activity instanceof MapActivity)
+            ((MapActivity)activity).showMarkerDetailDialog(position);
+	}
+
+
 	private static class ViewHolder {
 		public ImageView image;
 		public /*Roboto*/TextView text;
 		public /*Fontello*/TextView icon;
-	}
-
-	@Override
-	@NonNull
-	public View getUndoClickView(@NonNull View view) {
-		return view.findViewById(R.id.undo_button);
-	}
-
-	@Override
-	@NonNull
-	public View getUndoView(final int position, final View convertView,
-			@NonNull final ViewGroup parent) {
-		View view = convertView;
-		if (view == null) {
-			view = LayoutInflater.from(mContext).inflate(R.layout.list_item_undo_view,
-					parent, false);
-		}
-		return view;
-	}
-
-	@Override
-	public void onDismiss(@NonNull final ViewGroup listView,
-			@NonNull final int[] reverseSortedPositions) {
-		for (int position : reverseSortedPositions) {
-			remove(position);
-		}
+		public LinearLayout layoutMain;
+		public Marker marker;
 	}
 
 	public Filter getFilter() {

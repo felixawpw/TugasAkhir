@@ -5,7 +5,8 @@
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:background="@drawable/selector_background_empty" >
+    android:background="@drawable/selector_background_empty"
+    android:id="@+id/list_item_default_main_layout">
 
     <ImageView
         android:id="@+id/image"

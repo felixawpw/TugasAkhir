@@ -116,6 +116,5 @@ public class ParallaxTravelAdapter extends BaseAdapter implements Swappable,
 			default:
 				break;
 		}
-
 	}
 }

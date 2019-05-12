@@ -18,15 +18,15 @@ public class GridMap {
     }
 
     public int getMapWidth() {
-        return imageData.getWidth();
+        return pImage.getMapData().length;
     }
 
     public int getMapHeight() {
-        return imageData.getHeight();
+        return pImage.getMapData()[0].length;
     }
 
     public int[][] getMap() {
-        return pImage.getNormalizedMap();
+        return pImage.getMapData();
     }
 
     public void visitGrid(int x, int y) {
@@ -34,7 +34,10 @@ public class GridMap {
     }
 
     public double getCost(int xStart, int yStart, int xMove, int yMove) {
-        return 1;
+        if (getMap()[xMove][yMove] == 1)
+            return 1;
+        else
+            return 20;
     }
 
     public boolean isVisited(int x, int y) {
@@ -43,9 +46,5 @@ public class GridMap {
 
     public int getMapStatus(int x, int y) {
         return getMap()[x][y];
-    }
-
-    public boolean blocked(int x, int y) {
-        return getMap()[x][y] != ProcessedImage.MAP_ACCESSABLE;
     }
 }

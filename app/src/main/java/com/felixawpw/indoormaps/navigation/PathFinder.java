@@ -1,6 +1,8 @@
 package com.felixawpw.indoormaps.navigation;
 
 
+import android.util.Log;
+
 import com.felixawpw.indoormaps.util.SortedList;
 
 import java.util.HashSet;
@@ -31,6 +33,7 @@ public class PathFinder {
         this.allowDiagMovement = allowDiagMovement;
 
         nodes = new Node[map.getMapWidth()][map.getMapHeight()];
+        System.out.println("Map width : height = " + map.getMapWidth() + " : " + map.getMapHeight());
         for (int x = 0; x < map.getMapWidth(); x++)
             for (int y = 0; y < map.getMapHeight(); y++)
                 nodes[x][y] = new Node(x,y);
@@ -38,9 +41,6 @@ public class PathFinder {
 
     public Path findPath(int xStart, int yStart, int xGoal, int yGoal)
     {
-        if (map.blocked(xGoal, yGoal)) {
-            return null;
-        }
         closed.clear();
         open.clear();
         openSet.clear();
@@ -127,9 +127,6 @@ public class PathFinder {
 
     protected boolean isValid(int xStart, int yStart, int x, int y) {
         boolean invalid = (x < 0) || (y < 0) || (x >= map.getMapWidth()) || (y >= map.getMapHeight());
-        if ((!invalid) && ((xStart != x) || (yStart != y))) {
-            invalid = map.blocked(x, y);
-        }
         return !invalid;
     }
 

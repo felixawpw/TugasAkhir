@@ -51,7 +51,7 @@ public class VolleyServices {
     private RequestQueue requestQueue;
 //    private ImageLoader imageLoader;
     private static Context ctx;
-    public static final String ADDRESS_DEFAULT = "http://192.168.1.100/";
+    public static final String ADDRESS_DEFAULT = "http://192.168.0.18/";
     public static final String TAG = VolleyServices.class.getSimpleName();
 
     public static final String LOAD_MAP_IMAGE_BY_ID = ADDRESS_DEFAULT + "external/map/processed_map/download/";

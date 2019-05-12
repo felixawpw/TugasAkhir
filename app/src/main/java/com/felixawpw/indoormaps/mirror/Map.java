@@ -1,5 +1,9 @@
 package com.felixawpw.indoormaps.mirror;
 
+import android.graphics.Bitmap;
+
+import com.felixawpw.indoormaps.navigation.ImageCustom;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,7 +17,8 @@ public class Map {
     private float scaleWidth;
     private float scaleLength;
 
-
+    private ImageCustom customImage;
+    private int[][] arrayData;
 
     public String getNama() {
         return nama;
@@ -104,5 +109,21 @@ public class Map {
 
     public void getScaleLength(float scale_height) {
         this.scaleLength = scale_height;
+    }
+
+    public ImageCustom getCustomImage() {
+        return customImage;
+    }
+
+    public void setCustomImage(ImageCustom processedImage) {
+        this.customImage = processedImage;
+    }
+
+    public int[][] getArrayData() {
+        return arrayData;
+    }
+
+    public void setArrayData(int[][] arrayData) {
+        this.arrayData = arrayData;
     }
 }
