@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.LruCache;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -40,6 +42,8 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.felixawpw.indoormaps.adapter.DefaultAdapter;
 import com.felixawpw.indoormaps.adapter.MarkerAdapter;
 import com.felixawpw.indoormaps.adapter.MarkerListAdapter;
+import com.felixawpw.indoormaps.barcode.BarcodeCaptureActivity;
+import com.felixawpw.indoormaps.dialog.LoadingDialog;
 import com.felixawpw.indoormaps.font.RobotoTextView;
 import com.felixawpw.indoormaps.fragment.HomeFragment;
 import com.felixawpw.indoormaps.fragment.MapListFragment;
@@ -56,8 +60,11 @@ import com.felixawpw.indoormaps.services.LoadImage;
 import com.felixawpw.indoormaps.services.VolleyServices;
 import com.felixawpw.indoormaps.util.DummyContent;
 import com.felixawpw.indoormaps.util.ImageUtil;
+import com.felixawpw.indoormaps.view.FloatLabeledEditText;
 import com.felixawpw.indoormaps.view.PagerSlidingTabStrip;
 import com.felixawpw.indoormaps.view.PinView;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.nhaarman.listviewanimations.ArrayAdapter;
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
@@ -90,12 +97,15 @@ public class MapActivity extends AppCompatActivity {
     EditText searchField;
     MarkerAdapter mMarkerListAdapter;
     private ArrayList<Marker> markerData;
+    public static final int BARCODE_READER_REQUEST_CODE = 1;
+    LoadingDialog firstLoadDialog;
 
     PointF startDummy = new PointF(538, 248);
 
     public Marker getMarkerDataByIndex(int position) {
         return markerData.get(position);
     }
+
 
     //<editor-fold desc="Initiate" defaultstate="collapsed">
     @Override
@@ -197,6 +207,8 @@ public class MapActivity extends AppCompatActivity {
         public static final String REQUEST_MAPS_BY_TENANT_GID_ADDRESS = VolleyServices.ADDRESS_DEFAULT + "external/tenant/map/";
         public static final String GET_PROCESSED_MAP_DATA_ADDRESS = VolleyServices.ADDRESS_DEFAULT + "external/map/map_array_data/";
         public void requestMapsFromServer() {
+            firstLoadDialog = new LoadingDialog(this, "Downloading data from server . . .", "Please wait . . .");
+            firstLoadDialog.show();
             VolleyServices.getInstance(context).httpRequest(Request.Method.GET,  REQUEST_MAPS_BY_TENANT_GID_ADDRESS + MapActivity.placeId, context, MapActivity.this, REQUEST_MAPS_FROM_SERVER, null);
         }
 
@@ -246,6 +258,8 @@ public class MapActivity extends AppCompatActivity {
                                 mMarkerListAdapter.addAll(list);
                                 appearanceAnimate(0);
                             }
+                            firstLoadDialog.dismiss();
+
                         } catch (JSONException ex) {
                             Log.e(TAG, "Error handling response : " + ex.getMessage());
                         }
@@ -294,6 +308,15 @@ public class MapActivity extends AppCompatActivity {
             return null;
         }
 
+        public ArrayList<Marker> getConnectingMarker() {
+            ArrayList<Marker> marks = new ArrayList<>();
+            for (Marker mark : markerData) {
+                if (mark.getMarkerType() == Marker.TYPE_UPSTAIR || mark.getMarkerType() == Marker.TYPE_DOWNSTAIR)
+                    marks.add(mark);
+            }
+            return marks;
+        }
+
         public Marker searchMarkerByPosition(int position) {
             return markerData.get(position);
         }
@@ -319,11 +342,9 @@ public class MapActivity extends AppCompatActivity {
     Button planButtons[];
 
     public void loadMapImage(Map map) {
-        LoadImage loadImage = new LoadImage(null, map);
+        LoadImage loadImage = new LoadImage(null, map, true);
         loadImage.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + map.getId());
     }
-
-
 
     public void createFloorPlansButton(Map[] plans) {
         int index = 0;
@@ -343,7 +364,7 @@ public class MapActivity extends AppCompatActivity {
                 button.setBackground(drawable);
 
                 prevSelectedPlan = button;
-                LoadImage loadImage = new LoadImage(imagePlan, plan);
+                LoadImage loadImage = new LoadImage(imagePlan, plan, true);
                 loadImage.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + plan.getId());
             }
             else
@@ -371,13 +392,12 @@ public class MapActivity extends AppCompatActivity {
                         prevSelectedPlan.setBackgroundColor(getResources().getColor(R.color.main_color_500));
 
                     prevSelectedPlan = (Button)v;
-                    LoadImage loadImage = new LoadImage(imagePlan, true);
+                    LoadImage loadImage = new LoadImage(imagePlan, plan, true);
                     loadImage.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + plan.getId());
 
                     for (int i = 0; i < planButtons.length; i++) {
                         if ((Button)v == planButtons[i])
                             selectedPlanIndex = i;
-
                     }
                 }
             });
@@ -409,6 +429,16 @@ public class MapActivity extends AppCompatActivity {
         mDynamicListView.setAdapter(animAdapter);
     }
 
+    //<editor-fold desc="NAVIGATION DIALOG" defaultstate="collapsed">
+
+    Dialog spDialog;
+    Dialog loadingDialog;
+    View viewSpDialog;
+    boolean isSelectingStartingPoint = false;
+    Marker startingPointMarker = null;
+    Marker destinationMarker = null;
+    RobotoTextView textStarting;
+    RobotoTextView textDestination;
 
     public void showMarkerDetailDialog(int id) {
         final Marker marker = searchMarkerById(id);
@@ -424,15 +454,18 @@ public class MapActivity extends AppCompatActivity {
 
         int type = marker.getMarkerType();
         textType.setText(type == Marker.TYPE_PUBLIC ? "Public Places" :
-                        type == Marker.TYPE_UPSTAIR ? "Stair up" :
+                type == Marker.TYPE_UPSTAIR ? "Stair up" :
                         type == Marker.TYPE_DOWNSTAIR ? "Stair down" :
-                        type == Marker.TYPE_STAIR_UP_END ? "Stair up end" :
-                        type == Marker.TYPE_STAIR_DOWN_END  ? "Stair down" : "Undefined");
+                                type == Marker.TYPE_STAIR_UP_END ? "Stair up end" :
+                                        type == Marker.TYPE_STAIR_DOWN_END  ? "Stair down" : "Undefined");
 
         final Dialog fbDialogue = new Dialog(this, R.style.MaterialDialogSheet);
         fbDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
         fbDialogue.setContentView(v);
         fbDialogue.setCancelable(true);
+
+        if (isSelectingStartingPoint)
+            buttonDirection.setText("Select As Starting Point");
 
         buttonDirection.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -440,8 +473,12 @@ public class MapActivity extends AppCompatActivity {
                 if (maps[0].getCustomImage() == null || maps[0].getArrayData() == null)
                     Log.i(TAG, "Its not finished loading yet");
                 else {
-                    navigate(maps[0], startDummy, marker);
-                    fbDialogue.hide();
+                    if (!isSelectingStartingPoint) {
+                        showChooseStartingPointDialog(marker, true);
+                    } else {
+                        showChooseStartingPointDialog(marker, false);
+                    }
+                    fbDialogue.dismiss();
                 }
             }
         });
@@ -460,75 +497,118 @@ public class MapActivity extends AppCompatActivity {
             }
         }
     }
+    public void showChooseStartingPointDialog(Marker marker, boolean isNew) {
+        if (isNew) {
+            destinationMarker = marker;
+            spDialog = new Dialog(this, R.style.MaterialDialogSheet);
+            viewSpDialog = getLayoutInflater().inflate(R.layout.dialog_navigation_select_starting_point, null);
+            textStarting = viewSpDialog.findViewById(R.id.dialog_navigation_select_starting_point_text_starting);
+            textDestination = viewSpDialog.findViewById(R.id.dialog_navigation_select_starting_point_text_destination);
+            Button buttonSelectFromMap = viewSpDialog.findViewById(R.id.dialog_navigation_select_starting_point_button_from_map);
+            Button buttonScanQR = viewSpDialog.findViewById(R.id.dialog_navigation_select_starting_point_button_from_scan_qr);
+            Button buttonNavigate = viewSpDialog.findViewById(R.id.dialog_navigation_select_starting_point_button_navigate);
+            textDestination.setText(marker.getName());
 
-    public void navigate(Map map, PointF start, Marker end) {
+            buttonSelectFromMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isSelectingStartingPoint = true;
+                    spDialog.hide();
+                    Toast.makeText(MapActivity.this, "Click a marker on map, or select from list to define your starting point.", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            buttonScanQR.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isSelectingStartingPoint = true;
+                    Intent intent = new Intent(MapActivity.this, BarcodeCaptureActivity.class);
+                    startActivityForResult(intent, BARCODE_READER_REQUEST_CODE);
+                }
+            });
+
+            buttonNavigate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (startingPointMarker != null && destinationMarker != null) {
+                        navigate(maps[0], startingPointMarker, destinationMarker);
+                        startingPointMarker = null;
+                        destinationMarker = null;
+                        isSelectingStartingPoint = false;
+                        spDialog.dismiss();
+                    } else {
+                        Toast.makeText(MapActivity.this, "Make sure you've selected your starting and destination point.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            spDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+            spDialog.setContentView(viewSpDialog);
+            spDialog.setCancelable(true);
+            spDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            spDialog.getWindow().setGravity(Gravity.BOTTOM);
+            spDialog.show();
+        } else {
+            spDialog.show();
+            textStarting.setText(marker.getName());
+            startingPointMarker = marker;
+        }
+    }
+    public void createLoadingDialog() {
+        View v = getLayoutInflater().inflate(R.layout.dialog_navigation_loading, null);
+        loadingDialog = new Dialog(this, R.style.MaterialDialogSheet);
+        loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+        loadingDialog.setContentView(v);
+        loadingDialog.setCancelable(true);
+
+        loadingDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        loadingDialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+        loadingDialog.show();
+    }
+
+    public void closeLoadingDialog() {
+        loadingDialog.hide();
+        loadingDialog.dismiss();
+    }
+
+
+
+    //</editor-fold>
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == BARCODE_READER_REQUEST_CODE) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (data != null) {
+                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+                    String barcodeVal = barcode.displayValue;
+
+                    if (!barcodeVal.equals("")) {
+                        String[] token = barcodeVal.split("_");
+                        if (token.length == 3) {
+                            int markerId = Integer.parseInt(token[2]);
+                            showMarkerDetailDialog(markerId);
+                        }
+                    }
+                    Log.i(TAG, "Barcode data = " + barcode.displayValue);
+                } else {
+                    Log.e(TAG, "Error getting data " + CommonStatusCodes.getStatusCodeString(resultCode));
+                }
+            }
+        } else
+            super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void navigate(Map map, Marker startingMarker, Marker end) {
         ImageCustom imageData = map.getCustomImage();
         ProcessedImage pImage = new ProcessedImage(imageData, map.getArrayData());
         GridMap gridMap = new GridMap(pImage, imageData);
-        Agent agent = new Agent(gridMap, startDummy, imagePlan, maps);
+        Agent agent = new Agent(gridMap, startingMarker, imagePlan, maps, this);
         agent.execute(end);
+        createLoadingDialog();
     }
-
-    //<editor-fold desc="COMMENTED">
-    /*
-    private MarkerListAdapter mMarkerListAdapter;
-    private EditText searchField;
-    private static final int INITIAL_DELAY_MILLIS = 300;
-
-    public void initiateListView() {
-
-        searchField = (EditText) findViewById(R.id.activity_map_search_field);
-        //Implement Search
-        searchField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (mMarkerListAdapter != null) {
-                    mMarkerListAdapter.getFilter().filter(s);
-                } else {
-                    Log.d(TAG, "no filter availible");
-                }
-            }
-        });
-
-        ListView listView = (ListView) findViewById(R.id.activity_map_list_view);
-
-        //Get Google Cards Content
-        mMarkerListAdapter = new MarkerListAdapter(context, new ArrayList<MarkerModel>());
-
-        SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(
-                new SwipeDismissAdapter(mMarkerListAdapter, null));
-        swingBottomInAnimationAdapter.setAbsListView(listView);
-
-        assert swingBottomInAnimationAdapter.getViewAnimator() != null;
-        swingBottomInAnimationAdapter.getViewAnimator().setInitialDelayMillis(
-                INITIAL_DELAY_MILLIS);
-
-        listView.setClipToPadding(false);
-        listView.setDivider(null);
-        Resources r = getResources();
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                8, r.getDisplayMetrics());
-        listView.setDividerHeight(px);
-        listView.setFadingEdgeLength(0);
-        listView.setFitsSystemWindows(true);
-        px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12,
-                r.getDisplayMetrics());
-        listView.setPadding(px, px, px, px);
-        listView.setScrollBarStyle(ListView.SCROLLBARS_OUTSIDE_OVERLAY);
-        listView.setAdapter(swingBottomInAnimationAdapter);
-
-    }
-    */
-    //</editor-fold>
-
 }

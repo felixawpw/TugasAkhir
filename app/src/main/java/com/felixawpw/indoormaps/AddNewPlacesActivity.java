@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.felixawpw.indoormaps.dialog.LoadingDialog;
 import com.felixawpw.indoormaps.fragment.HomeFragment;
 import com.felixawpw.indoormaps.services.Permissions;
 import com.felixawpw.indoormaps.services.PlacesServices;
@@ -56,6 +57,7 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
     Button buttonAddPlace;
     public static final String TAG = AddNewPlacesActivity.class.getSimpleName();
     private int AUTOCOMPLETE_REQUEST_CODE = 1;
+    LoadingDialog loadingDialog;
 
     public Place selectedPlace;
 
@@ -72,7 +74,7 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
                     boolean status = response.getBoolean("status");
                     String message = response.getString("message");
                     int tenantId = response.getInt("tenant_id");
-
+                    loadingDialog.dismiss();
                     Toast.makeText(this, message.toString(), Toast.LENGTH_SHORT).show();
                     if (status) {
                         Intent intent = new Intent(this, AddedPlaceDetailsActivity.class);
@@ -95,6 +97,9 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
         @Override
         public void onClick(View v) {
             try {
+                loadingDialog = new LoadingDialog(AddNewPlacesActivity.this, "Processing data", "Please wait . . .");
+                loadingDialog.show();
+
                 Log.i(TAG, "Selected Place ID = " + selectedPlace.getId());
                 JSONObject postData = new JSONObject();
                 postData.put("nama", textNama.getText());

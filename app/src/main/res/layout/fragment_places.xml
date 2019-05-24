@@ -5,45 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragment.HomeFragment">
+    tools:context=".fragment.HomeFragment"
+    android:background="@color/cardview_light_background">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/main_color_grey_100"
-        android:gravity="center_vertical">
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@color/main_color_grey_100"
+    android:gravity="center_vertical">
 
-        <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:text="@string/fontello_search"
-            android:textColor="@color/material_grey_600"
-            android:textSize="18dp"
-            tools:ignore="SpUsage" />
+    <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/fontello_search"
+        android:textColor="@color/material_grey_600"
+        android:textSize="18dp"
+        tools:ignore="SpUsage" />
 
-        <EditText
-            android:id="@+id/fragment_places_search_field"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/edit_text_background_main"
-            android:inputType="text"
-            android:textColor="@color/main_color_grey_600"
-            android:textCursorDrawable="@drawable/edit_text_cursor_drawable_main" />
+    <EditText
+        android:id="@+id/fragment_places_search_field"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/edit_text_background_main"
+        android:inputType="text"
+        android:textColor="@color/main_color_grey_600"
+        android:textCursorDrawable="@drawable/edit_text_cursor_drawable_main" />
 
-        <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
-            android:id="@+id/fragment_places_search_x"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:text="@string/fontello_x_mark"
-            android:textColor="@color/material_grey_600"
-            android:textSize="18dp"
-            tools:ignore="SpUsage" />
-    </LinearLayout>
+    <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+        android:id="@+id/fragment_places_search_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/fontello_x_mark"
+        android:textColor="@color/material_grey_600"
+        android:textSize="18dp"
+        tools:ignore="SpUsage" />
+</LinearLayout>
 
     <View
         android:id="@+id/activity_map_view_element"

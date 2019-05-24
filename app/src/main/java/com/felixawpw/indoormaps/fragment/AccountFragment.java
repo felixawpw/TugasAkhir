@@ -42,11 +42,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
             case R.id.fragment_account_text_added_places:
                 intent = new Intent(getContext(), AddedPlacesActivity.class);
                 break;
-            case R.id.fragment_account_text_history:
-                break;
-            case R.id.fragment_account_text_calibrate:
-                intent = new Intent(getContext(), CalibrateActivity.class);
-                break;
             case R.id.fragment_account_text_signout:
                 //Sign out user
                 break;
@@ -80,14 +75,10 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
         View v = inflater.inflate(R.layout.fragment_account, container, false);
         linkAccount = (MaterialRippleLayout) v.findViewById(R.id.fragment_account_link_accounts);
         linkAddedPlaces = (MaterialRippleLayout)v.findViewById(R.id.fragment_account_link_added_places);
-        linkCalibrate = (MaterialRippleLayout)v.findViewById(R.id.fragment_account_link_calibrate);
-        linkHistory = (MaterialRippleLayout)v.findViewById(R.id.fragment_account_link_history);
         linkSignOut = (MaterialRippleLayout)v.findViewById(R.id.fragment_account_link_signout);
 
         textAccount = (TextView) v.findViewById(R.id.fragment_account_text_accounts);
         textAddedPlaces = (TextView)v.findViewById(R.id.fragment_account_text_added_places);
-        textCalibrate = (TextView)v.findViewById(R.id.fragment_account_text_calibrate);
-        textHistory = (TextView)v.findViewById(R.id.fragment_account_text_history);
         textSignOut = (TextView)v.findViewById(R.id.fragment_account_text_signout);
 
         linkAccount.setOnClickListener(this);

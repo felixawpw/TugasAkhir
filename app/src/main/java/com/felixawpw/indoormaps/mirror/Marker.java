@@ -10,6 +10,9 @@ public class Marker {
     public static final int TYPE_STAIR_UP_END = 4;
     public static final int TYPE_STAIR_DOWN_END = 5;
 
+    public static final int TYPE_TOILET = 6;
+    public static final int TYPE_SCAN_POINT = 7;
+
     private String name;
     private String description;
     private int id;
@@ -33,26 +36,6 @@ public class Marker {
         this.setMapId(data.getInt("map_id"));
         if (data.get("connecting_marker_id") != JSONObject.NULL)
             this.setTargetedMarkerId(data.getInt("connecting_marker_id"));
-    }
-
-    public static int getTypePublic() {
-        return TYPE_PUBLIC;
-    }
-
-    public static int getTypeUpstair() {
-        return TYPE_UPSTAIR;
-    }
-
-    public static int getTypeDownstair() {
-        return TYPE_DOWNSTAIR;
-    }
-
-    public static int getTypeStairUpEnd() {
-        return TYPE_STAIR_UP_END;
-    }
-
-    public static int getTypeStairDownEnd() {
-        return TYPE_STAIR_DOWN_END;
     }
 
     public String getName() {

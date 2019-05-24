@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.felixawpw.indoormaps.AddNewPlacesActivity;
 import com.felixawpw.indoormaps.MapActivity;
 import com.felixawpw.indoormaps.R;
+import com.felixawpw.indoormaps.fragment.HomeFragment;
 import com.felixawpw.indoormaps.fragment.PlacesFragment;
 import com.felixawpw.indoormaps.mirror.Marker;
 import com.felixawpw.indoormaps.mirror.Tenant;
@@ -91,7 +92,7 @@ public class TenantAdapter extends ArrayAdapter<TenantModel>
     public void onClick(View v) {
         // TODO Auto-generated method stub
         int position = (Integer) v.getTag(R.id.map_activity_marker_id);
-        if (activity instanceof PlacesFragment) {
+        if (activity instanceof HomeFragment) {
             TenantModel model = items.get(position);
             Intent intent = new Intent(context, MapActivity.class);
             intent.putExtra("placeId", model.getTenant().getGoogleMapsId());

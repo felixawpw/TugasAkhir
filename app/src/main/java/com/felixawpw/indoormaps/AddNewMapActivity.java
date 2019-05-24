@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.felixawpw.indoormaps.dialog.LoadingDialog;
 import com.felixawpw.indoormaps.mirror.Map;
 import com.felixawpw.indoormaps.services.DataPart;
 import com.felixawpw.indoormaps.services.Permissions;
@@ -48,6 +49,7 @@ public class AddNewMapActivity extends AppCompatActivity {
 
     public static final String TAG = AddNewMapActivity.class.getSimpleName();
     public static final int RESULT_GALLERY = 0;
+    LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,8 @@ public class AddNewMapActivity extends AppCompatActivity {
         String url = VolleyServices.ADDRESS_DEFAULT + "external/map/store/";
         // loading or check internet connection or something...
         // ... then
+        loadingDialog = new LoadingDialog(this, "Processing data", "Please wait . . .");
+        loadingDialog.show();
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
@@ -131,6 +135,7 @@ public class AddNewMapActivity extends AppCompatActivity {
                     Log.i(TAG, "Status = " + status);
 
                     if (status) {
+                        loadingDialog.dismiss();
                         Log.i(TAG, "Success : " + message);
                         finish();
                     } else {

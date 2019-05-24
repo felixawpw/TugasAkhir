@@ -22,6 +22,7 @@ import com.felixawpw.indoormaps.AddedPlacesActivity;
 import com.felixawpw.indoormaps.MapActivity;
 import com.felixawpw.indoormaps.OwnerMapActivity;
 import com.felixawpw.indoormaps.fragment.AddMarkerDataFragment;
+import com.felixawpw.indoormaps.fragment.HomeFragment;
 import com.felixawpw.indoormaps.fragment.MapListOwnerFragment;
 import com.felixawpw.indoormaps.fragment.MapViewFragment;
 import com.felixawpw.indoormaps.fragment.PlacesFragment;
@@ -52,11 +53,11 @@ public class VolleyServices {
     private RequestQueue requestQueue;
 //    private ImageLoader imageLoader;
     private static Context ctx;
-    public static final String ADDRESS_DEFAULT = "http://192.168.1.101/";
+    public static final String ADDRESS_DEFAULT = "http://192.168.0.18/";
     public static final String TAG = VolleyServices.class.getSimpleName();
 
     public static final String LOAD_MAP_IMAGE_BY_ID = ADDRESS_DEFAULT + "external/map/processed_map/download/";
-
+    public static final String LOAD_MARKER_QR_CODE = ADDRESS_DEFAULT + "external/marker/generate_qr_code/";
     private VolleyServices(Context context) {
         ctx = context;
         requestQueue = getRequestQueue();
@@ -88,8 +89,8 @@ public class VolleyServices {
 
     public RequestQueue getRequestQueue() {
         if (requestQueue == null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
+//             getApplicationContext() is key, it keeps you from leaking the
+//             Activity or BroadcastReceiver if someone passes one in.
             requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
         }
         return requestQueue;
@@ -108,18 +109,20 @@ public class VolleyServices {
 //    public ImageLoader getImageLoader() {
 //        return imageLoader;
 //    }
+    int statusCode = 0;
 
     public void httpRequest(int requestMethod, String url, Context context, final Object activity, final int requestId, JSONObject parameters) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (requestMethod, url, parameters, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.d(TAG, "Status code = " + statusCode + " : " + response);
                         if (activity instanceof MapActivity) {
                             ((MapActivity)activity).handleResponse(requestId, response);
                         } else if (activity instanceof AddNewPlacesActivity) {
                             ((AddNewPlacesActivity)activity).handleResponse(requestId, response);
-                        } else if (activity instanceof PlacesFragment) {
-                            ((PlacesFragment)activity).handleResponse(requestId, response);
+                        } else if (activity instanceof HomeFragment) {
+                            ((HomeFragment)activity).handleResponse(requestId, response);
                         } else if (activity instanceof AddedPlacesActivity) {
                             ((AddedPlacesActivity)activity).handleResponse(requestId, response);
                         } else if (activity instanceof AddedPlaceDetailsActivity) {
@@ -138,11 +141,17 @@ public class VolleyServices {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, error.getMessage());
+                        Log.e(TAG, "Error loading " + error.getMessage() + " status code = " + statusCode);
 
                     }
-                });
+                }) {
+            @Override
+            protected Response parseNetworkResponse(NetworkResponse response) {
+                statusCode = response.statusCode;
+                return super.parseNetworkResponse(response);
+            }
 
+        };
 
         VolleyServices.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }

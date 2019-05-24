@@ -79,40 +79,12 @@
                 android:textSize="22sp"
                 tools:ignore="DuplicateIds" />
 
-            <RadioGroup
-                android:id="@+id/fragment_set_marker_radiogroup_marker_type"
+            <Spinner
+                android:id="@+id/fragment_set_marker_spinner_type"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation='horizontal'>
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-                <RadioButton
-                    android:id="@+id/fragment_set_marker_radio_marker_type_1"
-                    style="@style/Widget.AppCompat.CompoundButton.RadioButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:text="Public Places"/>
-
-                <RadioButton
-                    android:id="@+id/fragment_set_marker_radio_marker_type_2"
-                    style="@style/Widget.AppCompat.CompoundButton.RadioButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:text="Upstair"/>
-
-                <RadioButton
-                    android:id="@+id/fragment_set_marker_radio_marker_type_3"
-                    style="@style/Widget.AppCompat.CompoundButton.RadioButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Downstair"
-                    android:layout_weight="1"/>
-
-            </RadioGroup>
         </LinearLayout>
 
         <View

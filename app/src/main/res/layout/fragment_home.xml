@@ -2,26 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragment.HomeFragment">
+    tools:context=".fragment.HomeFragment"
+    android:focusableInTouchMode="true"
+    android:focusable="true">
 
     <!-- TODO: Update blank fragment layout -->
-
     <FrameLayout
         android:id="@+id/fragment_home_map_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="2">
 
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_weight="1"
         android:orientation="vertical">
 
         <com.felixawpw.indoormaps.font.RobotoTextView
@@ -30,25 +31,102 @@
             android:layout_height="wrap_content"
             android:text="@string/home_screen_places_likelihood"
             android:textAlignment="center"
-            android:textColor="?android:attr/colorButtonNormal"
-            android:textSize="24sp" />
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:layout_marginTop="5dp"/>
 
         <com.felixawpw.indoormaps.font.RobotoTextView
             android:id="@+id/fragment_home_text_place_likelihood"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
+            android:fontFamily=""
             android:textColor="@android:color/black"
-            android:textSize="24sp" />
+            android:textSize="16sp"
+            android:layout_marginTop="5dp"/>
 
         <Button
             android:id="@+id/fragment_home_button_show_map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/colorPrimary"
-            android:text="@string/home_screen_view_indoor_maps_button"
-            android:textSize="18sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_oval"
+            android:text="Show Indoor Map"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_marginTop="5dp"/>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/main_color_500"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/main_color_grey_100"
+            android:gravity="center_vertical">
+
+            <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/fontello_search"
+                android:textColor="@color/material_grey_600"
+                android:textSize="18dp"
+                tools:ignore="SpUsage" />
+
+            <EditText
+                android:id="@+id/fragment_home_search_field"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/edit_text_background_main"
+                android:inputType="text"
+                android:hint="Search manually"
+                android:textColor="@color/main_color_grey_600"
+                android:textCursorDrawable="@drawable/edit_text_cursor_drawable_main" />
+
+            <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+                android:id="@+id/fragment_home_search_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/fontello_x_mark"
+                android:textColor="@color/material_grey_600"
+                android:textSize="18dp"
+                tools:ignore="SpUsage" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/activity_map_view_element"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/main_color_500"/>
+
+        <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
+            android:id="@+id/fragment_home_list_tenants"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
+
 
 </LinearLayout>

@@ -11,8 +11,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import com.felixawpw.indoormaps.AddMarkerWizardActivity;
 import com.felixawpw.indoormaps.R;
@@ -28,11 +31,11 @@ public class AddMarkerSetFragment extends Fragment {
     private LinearLayout layout;
     private int mapId;
     public PinView imageView;
-    RadioGroup groupMarkerType;
     private OnFragmentInteractionListener mListener;
     private FloatLabeledEditText textName, textDescription;
     public float selectedX, selectedY;
     AddMarkerWizardActivity parentActivity;
+    Spinner spinnerMarkerType;
 
     public AddMarkerSetFragment() {
         // Required empty public constructor
@@ -66,7 +69,12 @@ public class AddMarkerSetFragment extends Fragment {
         imageView = v.findViewById(R.id.fragment_set_marker_imageMap);
         textName = v.findViewById(R.id.fragment_set_marker_nama);
         textDescription = v.findViewById(R.id.fragment_set_marker_deskripsi);
-        groupMarkerType =v.findViewById(R.id.fragment_set_marker_radiogroup_marker_type);
+        spinnerMarkerType =v.findViewById(R.id.fragment_set_marker_spinner_type);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(parentActivity,
+                R.array.marker_type_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMarkerType.setAdapter(adapter);
+
         LoadImage load = new LoadImage(imageView, false);
         load.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + mapId);
         addListeners();
@@ -76,23 +84,34 @@ public class AddMarkerSetFragment extends Fragment {
     public void addListeners() {
         imageView.setOnTouchListener(imageMapOnTouchListener);
 
-        groupMarkerType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        spinnerMarkerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                System.out.println("Selected Radio = " + checkedId);
-                switch (checkedId) {
-                    case R.id.fragment_set_marker_radio_marker_type_1:
-                        parentActivity.dataContainer.type = Marker.getTypePublic();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        parentActivity.dataContainer.type = Marker.TYPE_PUBLIC;
                         break;
-                    case R.id.fragment_set_marker_radio_marker_type_2:
-                        parentActivity.dataContainer.type = Marker.getTypeUpstair();
+                    case 1:
+                        parentActivity.dataContainer.type = Marker.TYPE_UPSTAIR;
                         break;
-                    case R.id.fragment_set_marker_radio_marker_type_3:
-                        parentActivity.dataContainer.type = Marker.getTypeDownstair();
+                    case 2:
+                        parentActivity.dataContainer.type = Marker.TYPE_DOWNSTAIR;
+                        break;
+                    case 3:
+                        parentActivity.dataContainer.type = Marker.TYPE_TOILET;
+                        break;
+                    case 4:
+                        parentActivity.dataContainer.type = Marker.TYPE_SCAN_POINT;
                         break;
                     default:
                         break;
                 }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 

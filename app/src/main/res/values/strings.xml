@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Strings related to MainActivity-->
+    <string name="scan_barcode_button">Scan barcode</string>
+    <string name="no_barcode_captured">No barcode captured</string>
+    <string name="barcode_error_format">"Error reading barcode: %1$s"</string>
+
+    <!-- Strings related to barcode scanner -->
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+
+
 
     <string-array name="marker_type_array">
         <item>Public Facilities</item>
-        <item>Tenants</item>
-        <item>Upstair</item>
-        <item>Downstair</item>
+        <item>Stair up</item>
+        <item>Stair down</item>
+        <item>Toilet</item>
+        <item>Scan Point</item>
     </string-array>
 
     <!-- Defined String Resources-->
@@ -201,6 +213,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
 
-    <item type="id" name="map_activity_marker_id" />
-    <item type="id" name="map_activity_holder" />
+    <item name="map_activity_marker_id" type="id" />
+    <item name="map_activity_holder" type="id" />
 </resources>

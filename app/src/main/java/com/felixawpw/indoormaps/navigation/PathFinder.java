@@ -108,6 +108,7 @@ public class PathFinder {
                 }
             }
         }
+
         if (nodes[xStart][yStart].x == nodes[xGoal][yGoal].x &&
                 nodes[xStart][yStart].y == nodes[xGoal][yGoal].y)
             return new Path();

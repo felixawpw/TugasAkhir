@@ -1,6 +1,7 @@
 package com.felixawpw.indoormaps;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Handler;
@@ -17,12 +18,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.felixawpw.indoormaps.fragment.AddMarkerDataFragment;
 import com.felixawpw.indoormaps.fragment.AddMarkerFinishingFragment;
 import com.felixawpw.indoormaps.fragment.AddMarkerSetFragment;
 import com.felixawpw.indoormaps.mirror.Map;
+import com.felixawpw.indoormaps.mirror.Marker;
 import com.felixawpw.indoormaps.services.LoadImage;
 import com.felixawpw.indoormaps.services.VolleyServices;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.checkerframework.checker.units.qual.A;
 import org.json.JSONException;
@@ -51,7 +59,11 @@ public class AddMarkerWizardActivity extends AppCompatActivity implements
             if (description != null)
                 fragment.textDescription.setText(description);
             if (type != -1)
-                fragment.textType.setText(type == 1 ? "Public Places" : type == 2 ? "Upstairs" : type == 3 ? "Down Stairs" : "");
+                fragment.textType.setText(type == Marker.TYPE_PUBLIC ? "Public Places" :
+                        type == Marker.TYPE_UPSTAIR ? "Upstairs" :
+                        type == Marker.TYPE_DOWNSTAIR ? "Down Stairs" :
+                        type == Marker.TYPE_TOILET ? "Toilet" :
+                        type == Marker.TYPE_SCAN_POINT ? "Scan Point" : "");
 
             LoadImage load = new LoadImage(fragment.imageMapOrigin, new PointF(pinX, pinY));
             load.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + fragment.mapId);
@@ -61,6 +73,19 @@ public class AddMarkerWizardActivity extends AppCompatActivity implements
                 LoadImage load2 = new LoadImage(fragment.imageMapTarget,new PointF(targetedPinX, targetedPinY));
                 load2.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + targetedMap.getId());
             }
+//            else if (type == Marker.TYPE_SCAN_POINT) {
+////                String text=String.format("scan_point_%s_%s_%s_%s", name, description, id, (int)(Math.random() * 1000000)); //Format = scan_point_nama_description_mapid_randomnumber
+////                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+////                try {
+////                    BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,500,500);
+////                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+////                    Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+////                    fragment.imageMapTarget.setImage(ImageSource.bitmap(bitmap));
+////                    fragment.textSecondImageTitle.setText("QR Code");
+////                } catch (WriterException e) {
+////                    e.printStackTrace();
+////                }
+//            }
             else
                 fragment.layoutTargetedMap.setVisibility(View.INVISIBLE);
 
@@ -136,12 +161,15 @@ public class AddMarkerWizardActivity extends AppCompatActivity implements
                     if (pager.getCurrentItem() == 1)
                         previousButton.setText("Close");
 
-                    pager.setCurrentItem(pager.getCurrentItem() - 1);
+                    if (dataContainer.type == Marker.TYPE_PUBLIC || dataContainer.type == Marker.TYPE_TOILET || dataContainer.type == Marker.TYPE_SCAN_POINT)
+                        pager.setCurrentItem(1);
+                    else
+                        pager.setCurrentItem(pager.getCurrentItem() - 2);
+
                     setNavigator();
 				} else {
 				    finish();
                 }
-
             }
         });
 
@@ -152,7 +180,7 @@ public class AddMarkerWizardActivity extends AppCompatActivity implements
                 // TODO Auto-generated method stub
                 System.out.println(dataContainer.toString());
                 if (pager.getCurrentItem() == 0) {
-                    if (dataContainer.type == 1) {
+                    if (dataContainer.type == Marker.TYPE_PUBLIC || dataContainer.type == Marker.TYPE_TOILET || dataContainer.type == Marker.TYPE_SCAN_POINT) {
                         pager.setCurrentItem(pager.getCurrentItem() + 2);
                     } else {
                         pager.setCurrentItem(pager.getCurrentItem() + 1);
@@ -170,7 +198,6 @@ public class AddMarkerWizardActivity extends AppCompatActivity implements
 //                    Toast.makeText(AddMarkerWizardActivity.this, "Finish",
 //                            Toast.LENGTH_SHORT).show();
                 }
-
                 if (pager.getCurrentItem() == 2)
                     nextButton.setText("Finish");
                 setNavigator();
@@ -213,7 +240,13 @@ public class AddMarkerWizardActivity extends AppCompatActivity implements
                     Toast.makeText(AddMarkerWizardActivity.this, message, Toast.LENGTH_SHORT).show();
 
                     if (status) {
-                        finish();
+                        if (dataContainer.type == Marker.TYPE_SCAN_POINT) {
+                            String markerId = response.getString("marker_id");
+                            Intent intent = new Intent(AddMarkerWizardActivity.this, ScanPointDetailActivity.class);
+                            intent.putExtra("markerId", markerId);
+                            startActivity(intent);
+                        } else
+                            finish();
                     }
                     Log.i(TAG, "Response = " + response);
                     break;

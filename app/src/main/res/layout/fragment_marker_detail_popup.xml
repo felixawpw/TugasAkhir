@@ -18,7 +18,10 @@
         android:gravity="center"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"/>
+        android:layout_marginRight="8dp"
+        android:textColorHint="@color/quantum_black_hint_text"
+        android:textColor="@color/quantum_black_text"/>
+
 
     <com.felixawpw.indoormaps.font.RobotoTextView
         android:id="@+id/fragment_marker_detail_popup_text_type"
@@ -28,7 +31,8 @@
         android:text="Location Type"
         android:gravity="center"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"/>
+        android:layout_marginRight="8dp"
+        android:textColor="@color/quantum_black_secondary_text"/>
 
     <View
         android:layout_width="match_parent"
@@ -48,7 +52,9 @@
         android:text="Location Description"
         android:gravity="center"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"/>
+        android:layout_marginRight="8dp"
+        android:textColorHint="@color/quantum_black_text"
+        android:textColor="@color/quantum_black_text"/>
 
     <Button
         android:id="@+id/fragment_marker_detail_popup_button_direction"

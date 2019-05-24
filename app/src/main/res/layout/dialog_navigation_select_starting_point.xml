@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/cardview_light_background">
+
+    <com.felixawpw.indoormaps.font.RobotoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="Starting Location"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/quantum_black_text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:gravity="center_vertical">
+
+        <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+            android:id="@+id/icon_friends"
+            style="@style/TextViewAppearance.Title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/material_icon_account"
+            android:textColor="@color/main_color_grey_300"
+            android:textSize="18dp"
+            tools:ignore="DuplicateIds" />
+
+        <com.felixawpw.indoormaps.font.RobotoTextView
+            android:id="@+id/dialog_navigation_select_starting_point_text_starting"
+            android:hint="Choose Starting Location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18dp"
+            android:textColorHint="@color/quantum_black_hint_text"
+            android:textColor="@color/quantum_black_text"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/dialog_navigation_select_starting_point_button_from_scan_qr"
+            android:background="@drawable/button_oval"
+            android:text="Scan Point By QR"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="32dp"
+            android:layout_marginRight="8dp"/>
+
+        <Button
+            android:id="@+id/dialog_navigation_select_starting_point_button_from_map"
+            android:background="@drawable/button_oval"
+            android:text="Select from map"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="32dp"
+            android:layout_marginLeft="8dp"/>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/main_color_500"/>
+
+    <com.felixawpw.indoormaps.font.RobotoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="Destination"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/quantum_black_text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+
+        <com.felixawpw.indoormaps.font.MaterialDesignIconsTextView
+            android:id="@+id/icon_friends"
+            style="@style/TextViewAppearance.Title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/material_icon_account"
+            android:textColor="@color/main_color_grey_300"
+            android:textSize="18dp"
+            tools:ignore="DuplicateIds" />
+
+        <com.felixawpw.indoormaps.font.RobotoTextView
+            android:id="@+id/dialog_navigation_select_starting_point_text_destination"
+            android:hint="Destination Point"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18dp"
+            android:textColorHint="@color/quantum_black_hint_text"
+            android:textColor="@color/quantum_black_text"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/main_color_500"/>
+
+    <Button
+        android:id="@+id/dialog_navigation_select_starting_point_button_navigate"
+        android:background="@drawable/button_oval"
+        android:text="Navigate"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="10dp"/>
+
+</LinearLayout>

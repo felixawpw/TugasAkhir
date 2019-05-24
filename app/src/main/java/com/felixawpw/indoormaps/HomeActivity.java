@@ -3,6 +3,7 @@ package com.felixawpw.indoormaps;
 
 import java.util.ArrayList;
 
+import android.accounts.Account;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,13 +31,14 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class HomeActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
-        PlacesFragment.OnFragmentInteractionListener,
         AccountFragment.OnFragmentInteractionListener {
 
     private MyPagerAdapter adapter;
     private Toolbar toolbar;
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
+    HomeFragment homeFragment;
+    AccountFragment accountFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class HomeActivity extends AppCompatActivity
         if (!imageLoader.isInited()) {
             imageLoader.init(ImageLoaderConfiguration.createDefault(this));
         }
+        homeFragment = HomeFragment.newInstance(0);
+        accountFragment = AccountFragment.newInstance(1);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Tabs universal");
@@ -64,16 +68,6 @@ public class HomeActivity extends AppCompatActivity
                         .getDisplayMetrics());
         pager.setPageMargin(pageMargin);
         pager.setCurrentItem(0);
-
-        tabs.setOnTabReselectedListener(new PagerSlidingTabStrip.OnTabReselectedListener() {
-            @Override
-            public void onTabReselected(int position) {
-            Toast.makeText(HomeActivity.this,
-                "Tab reselected: " + position, Toast.LENGTH_SHORT)
-                .show();
-            }
-        });
-
     }
 
     @Override
@@ -102,7 +96,6 @@ public class HomeActivity extends AppCompatActivity
         private final ArrayList<String> tabNames = new ArrayList<String>() {
             {
                 add("Home");
-                add("Places");
                 add("Account");
                 add("Help");
             }
@@ -125,14 +118,11 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return HomeFragment.newInstance(position);
-            } else if (position == 1){
-                return PlacesFragment.newInstance(position);
-            } else if (position == 2) {
-                return AccountFragment.newInstance(position);
+                return homeFragment;
+            } else if (position == 1) {
+                return accountFragment;
             } else
                 return AccountFragment.newInstance(position);
         }
     }
-
 }

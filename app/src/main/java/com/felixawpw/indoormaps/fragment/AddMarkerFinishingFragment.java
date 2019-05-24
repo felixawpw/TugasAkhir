@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.felixawpw.indoormaps.AddMarkerWizardActivity;
 import com.felixawpw.indoormaps.R;
+import com.felixawpw.indoormaps.font.RobotoTextView;
 import com.felixawpw.indoormaps.view.FloatLabeledEditText;
 import com.felixawpw.indoormaps.view.PinView;
 
@@ -21,7 +22,7 @@ public class AddMarkerFinishingFragment extends Fragment {
     public FloatLabeledEditText textName, textDescription, textType;
     public PinView imageMapOrigin, imageMapTarget;
     public LinearLayout layoutTargetedMap;
-
+    public RobotoTextView textSecondImageTitle;
     public AddMarkerFinishingFragment() {
         // Required empty public constructor
     }
@@ -50,6 +51,7 @@ public class AddMarkerFinishingFragment extends Fragment {
         imageMapOrigin = v.findViewById(R.id.fragment_add_marker_finishing_imageMapOrigin);
         imageMapTarget = v.findViewById(R.id.fragment_add_marker_finishing_imageMapTarget);
         layoutTargetedMap = v.findViewById(R.id.fragment_add_marker_finishing_layoutTargetedMap);
+        textSecondImageTitle = v.findViewById(R.id.fragment_add_marker_finishing_text_second_image_title);
         parentActivity.dataContainer.notifyChanges(this);
         return v;
     }
