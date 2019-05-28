@@ -85,7 +85,6 @@ public class PlacesServices {
             // A local method to request required permissions;
             // See https://developer.android.com/training/permissions/requesting
         }
-
     }
 
     public void getDeviceLocation(final GoogleMap gMap, Activity baseActivity) {
