@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    tools:context=".CalibrateScanPointActivity"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/activity_calibrate_scan_point_button_scan_qr"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/button_oval"
+        android:text="Scan QR Code"
+        android:textColor="@color/quantum_white_text"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/main_color_500" />
+
+    <TextView
+        android:id="@+id/activity_calibrate_scan_point_text_scan_point_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:textColor="@color/quantum_black_text"
+        android:layout_marginBottom="8dp"
+        android:text="Undefined Scan Point" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="From which point do you scan the QR code?"
+        android:textColor="@color/quantum_black_secondary_text"/>
+
+    <com.felixawpw.indoormaps.view.PinView
+        android:id="@+id/activity_calibrate_scan_point_map_view"
+        android:layout_width="match_parent"
+        android:layout_height="280dp" />
+
+    <Button
+        android:id="@+id/activity_calibrate_scan_point_button_calibrate"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/button_oval"
+        android:text="Calibrate"
+        android:textColor="@color/quantum_white_text"/>
+
+</LinearLayout>

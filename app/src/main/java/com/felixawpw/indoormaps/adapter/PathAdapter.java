@@ -2,6 +2,7 @@ package com.felixawpw.indoormaps.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.felixawpw.indoormaps.MapActivity;
 import com.felixawpw.indoormaps.OwnerMapActivity;
 import com.felixawpw.indoormaps.R;
+import com.felixawpw.indoormaps.dialog.RoutesDialog;
 import com.felixawpw.indoormaps.mirror.Marker;
 import com.felixawpw.indoormaps.model.MarkerModel;
 import com.felixawpw.indoormaps.navigation.Path;
@@ -32,8 +34,22 @@ public class PathAdapter extends ArrayAdapter<ProcessedStep> implements View.OnC
 	private List<ProcessedStep> processedSteps;
 	private boolean mShouldShowDragAndDropIcon;
 	private Filter filter;
+	private RoutesDialog dialog;
 
 	public PathAdapter(Context context, List<ProcessedStep> processedSteps, boolean shouldShowDragAndDropIcon, Activity activity) {
+		mContext = context;
+		mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.processedSteps = processedSteps;
+		mShouldShowDragAndDropIcon = shouldShowDragAndDropIcon;
+		this.activity = activity;
+	}
+
+	public PathAdapter(Context context,
+					   List<ProcessedStep> processedSteps,
+					   boolean shouldShowDragAndDropIcon,
+					   Activity activity,
+					   RoutesDialog dialog) {
+		this.dialog = dialog;
 		mContext = context;
 		mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.processedSteps = processedSteps;
@@ -75,13 +91,18 @@ public class PathAdapter extends ArrayAdapter<ProcessedStep> implements View.OnC
 			holder.layoutMain = (LinearLayout) convertView.findViewById(R.id.list_item_default_main_layout);
 			holder.layoutMain.setTag(position);
 
+			holder.text.setTextColor(Color.BLACK);
+			holder.textMapName.setTextColor(Color.BLACK);
 			convertView.setTag(R.id.map_activity_holder, holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag(R.id.map_activity_holder);
 		}
 
 		holder.text.setText(dm.angleToString());
-		holder.textMapName.setText("" + dm.getMapId());
+
+		if (dialog != null)
+			holder.textMapName.setText(dialog.getMapById(dm.getMapId()) == null ?
+					"Error displaying name" : dialog.getMapById(dm.getMapId()).getNama());
 		return convertView;
 	}
 

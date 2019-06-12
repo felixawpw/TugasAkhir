@@ -82,7 +82,10 @@ public class ParallaxTravelAdapter extends BaseAdapter implements Swappable,
 		TenantModel dm = mTenantModelList.get(position);
 
 		holder.name.setText(dm.getText());
-		holder.text.setText(R.string.lorem_ipsum_short);
+		if (dm.getTenant() != null) {
+			holder.text.setText(dm.getTenant().getGoogleMapsAddress());
+		} else
+			holder.text.setText("");
 		
 		holder.show.setTag(position);
 		return convertView;

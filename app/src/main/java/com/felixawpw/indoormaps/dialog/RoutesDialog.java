@@ -19,6 +19,7 @@ import com.felixawpw.indoormaps.adapter.MarkerAdapter;
 import com.felixawpw.indoormaps.adapter.PathAdapter;
 import com.felixawpw.indoormaps.font.RobotoTextView;
 import com.felixawpw.indoormaps.mirror.Map;
+import com.felixawpw.indoormaps.mirror.Marker;
 import com.felixawpw.indoormaps.navigation.Path;
 import com.felixawpw.indoormaps.navigation.ProcessedStep;
 import com.felixawpw.indoormaps.navigation.Step;
@@ -49,8 +50,12 @@ public class RoutesDialog {
     List<Path> paths;
     Map[] maps;
     public static final String TAG = RoutesDialog.class.getSimpleName();
+    float orientation;
+    Marker startPoint;
+    public RoutesDialog(Activity activity, Map[] maps, List<Path> paths, float orientation, Marker startPoint) {
+        this.orientation = orientation;
+        this.startPoint = startPoint;
 
-    public RoutesDialog(Activity activity, Map[] maps, List<Path> paths) {
         View v = activity.getLayoutInflater().inflate(R.layout.dialog_show_routes, null);
 //        layoutFloorPlans = v.findViewById(R.id.dialog_show_routes_layout1);
         imagePlan = v.findViewById(R.id.dialog_show_routes_image_plan);
@@ -101,13 +106,26 @@ public class RoutesDialog {
 
         List<ProcessedStep> processedSteps = generateSteps();
 
-        stepsAdapter = new PathAdapter(activity, processedSteps, false, activity);
+        stepsAdapter = new PathAdapter(activity,
+                processedSteps,
+                false,
+                activity,
+                this);
         appearanceAnimate(0);
     }
 
     HashMap<Map, Bitmap> mapBitmapByMaps;
     List<Map> orderedMapList;
     int displayedMapIndex;
+
+    public Map getMapById(int id) {
+        for (Map map : orderedMapList)
+            if (map.getId() == id)
+                return map;
+
+        return null;
+    }
+
     public void generatePath() {
         mapBitmapByMaps = new HashMap<>();
         orderedMapList = new ArrayList<>();
@@ -141,9 +159,55 @@ public class RoutesDialog {
         setDisplayedMap(displayedMapIndex);
     }
 
+    public double headingFromStartPoint() {
+        PointF scannerLocation = new PointF(startPoint.getCalibrate_x(), startPoint.getCalibrate_y());
+        PointF scanPointLocation = new PointF(startPoint.getPointX(), startPoint.getPointY());
+        float actualHeading = startPoint.getHeading();
+
+        double distance = Math.sqrt(Math.pow(scannerLocation.x - scanPointLocation.x, 2)
+                + Math.pow(scannerLocation.y - scanPointLocation.y, 2));
+
+        double cosAngle = Math.acos((double)(scanPointLocation.x - scannerLocation.x) / distance) * 180 / Math.PI;
+        double sinAngle = Math.asin((double)(scanPointLocation.y - scannerLocation.y) / distance) * 180 / Math.PI;
+
+        int quadrant;
+        if (cosAngle >= 0 && sinAngle >= 0)
+            quadrant = 1;
+        else if (cosAngle < 0 && sinAngle >= 0)
+            quadrant = 2;
+        else if (cosAngle < 0 && sinAngle < 0)
+            quadrant = 3;
+        else
+            quadrant = 4;
+
+        double mapHeading = 0;
+        sinAngle = Math.abs(sinAngle);
+        switch(quadrant) {
+            case 1:
+                mapHeading += 0 + sinAngle;
+                break;
+            case 2:
+                mapHeading += 180 - sinAngle;
+                break;
+            case 3:
+                mapHeading += 180 + sinAngle;
+                break;
+            case 4:
+                mapHeading += 360 - sinAngle;
+                break;
+        }
+
+        double calibratedHeading = mapHeading - actualHeading;
+        if (calibratedHeading < 0)
+            calibratedHeading = 360 - calibratedHeading;
+
+        calibratedHeading %= 360;
+        return calibratedHeading;
+    }
+
     public List<ProcessedStep> generateSteps() {
         List<ProcessedStep> results = new ArrayList<>();
-
+        double calibratedHeading = headingFromStartPoint();
         for (Path path : paths) {
             List<Step> stepLists = path.steps;
             if (!path.steps.isEmpty()) {
@@ -158,19 +222,19 @@ public class RoutesDialog {
                     if (!xIsChanged) {
                         if (prevStep.getX() != st.getX()) {
                             xIsChanged = true;
-                            processedStepLists.add(new ProcessedStep(lastChangedStep, prevStep, path.mapId, 0));
+                            processedStepLists.add(new ProcessedStep(lastChangedStep, prevStep, path.mapId, calibratedHeading));
                             lastChangedStep = st;
                         }
                     } else {
                         if (prevStep.getY() != st.getY()) {
                             xIsChanged = false;
-                            processedStepLists.add(new ProcessedStep(lastChangedStep, prevStep, path.mapId, 0));
+                            processedStepLists.add(new ProcessedStep(lastChangedStep, prevStep, path.mapId, calibratedHeading));
                             lastChangedStep = st;
                         }
                     }
                     prevStep = st;
                 }
-                processedStepLists.add(new ProcessedStep(lastChangedStep, prevStep, path.mapId, 0));
+                processedStepLists.add(new ProcessedStep(lastChangedStep, prevStep, path.mapId, calibratedHeading));
 
                 List<ProcessedStep> trimmed = ProcessedStep.trimSteps(processedStepLists);
                 results.addAll(trimmed);
@@ -183,6 +247,7 @@ public class RoutesDialog {
     public void setDisplayedMap(int mapIndex) {
         Bitmap bitmap = mapBitmapByMaps.get(orderedMapList.get(mapIndex));
         imagePlan.setImage(ImageSource.cachedBitmap(bitmap));
+        textFloorName.setText(orderedMapList.get(mapIndex).getNama());
         displayedMapIndex = mapIndex;
     }
 

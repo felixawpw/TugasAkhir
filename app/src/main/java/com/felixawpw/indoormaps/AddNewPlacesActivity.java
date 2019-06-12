@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.felixawpw.indoormaps.dialog.LoadingDialog;
 import com.felixawpw.indoormaps.fragment.HomeFragment;
+import com.felixawpw.indoormaps.services.AuthServices;
 import com.felixawpw.indoormaps.services.Permissions;
 import com.felixawpw.indoormaps.services.PlacesServices;
 import com.felixawpw.indoormaps.services.VolleyServices;
@@ -50,7 +52,6 @@ import java.util.TimerTask;
 import afu.org.checkerframework.checker.oigj.qual.O;
 
 public class AddNewPlacesActivity extends AppCompatActivity implements OnMapReadyCallback {
-    private Toolbar toolbar;
     GoogleMap googleMap;
     MapView mapView;
     FloatLabeledEditText textNama, textAlamat;
@@ -74,11 +75,15 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
                     boolean status = response.getBoolean("status");
                     String message = response.getString("message");
                     int tenantId = response.getInt("tenant_id");
+                    String tenantName = response.getString("tenant_name");
+                    String googleMapId = response.getString("google_maps_id");
                     loadingDialog.dismiss();
                     Toast.makeText(this, message.toString(), Toast.LENGTH_SHORT).show();
                     if (status) {
                         Intent intent = new Intent(this, AddedPlaceDetailsActivity.class);
                         intent.putExtra("tenant_id", tenantId);
+                        intent.putExtra("tenant_name", tenantName);
+                        intent.putExtra("tenant_google_maps_id", googleMapId);
                         startActivity(intent);
                     }
                     break;
@@ -92,27 +97,38 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
     }
     //</editor-fold>
 
+    public boolean validateInput() {
+        return textNama.getText().toString() != "" &&
+                AuthServices.getInstance().getUser() != null &&
+                selectedPlace != null;
+
+    }
+
     //<editor-fold desc="Listeners" defaultstate="collapsed">
     public View.OnClickListener buttonAddPlaceOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             try {
-                loadingDialog = new LoadingDialog(AddNewPlacesActivity.this, "Processing data", "Please wait . . .");
-                loadingDialog.show();
+                if (validateInput()) {
+                    loadingDialog = new LoadingDialog(AddNewPlacesActivity.this, "Processing data", "Please wait . . .");
+                    loadingDialog.show();
 
-                Log.i(TAG, "Selected Place ID = " + selectedPlace.getId());
-                JSONObject postData = new JSONObject();
-                postData.put("nama", textNama.getText());
-                postData.put("user_id", "1"); //Not finished
-                postData.put("google_maps_id", selectedPlace.getId());
-                postData.put("google_maps_address", selectedPlace.getAddress());
-                VolleyServices.getInstance(getApplicationContext()).httpRequest(
-                        Request.Method.POST,
-                        POST_NEW_PLACE_DATA_ADDRESS,
-                        getApplicationContext(),
-                        AddNewPlacesActivity.this,
-                        POST_NEW_PLACE_DATA,
-                        postData);
+                    Log.i(TAG, "Selected Place ID = " + selectedPlace.getId());
+                    JSONObject postData = new JSONObject();
+                    postData.put("nama", textNama.getText());
+                    postData.put("user_id", AuthServices.getInstance().getUser().getId());
+                    postData.put("google_maps_id", selectedPlace.getId());
+                    postData.put("google_maps_address", selectedPlace.getAddress());
+                    VolleyServices.getInstance(getApplicationContext()).httpRequest(
+                            Request.Method.POST,
+                            POST_NEW_PLACE_DATA_ADDRESS,
+                            getApplicationContext(),
+                            AddNewPlacesActivity.this,
+                            POST_NEW_PLACE_DATA,
+                            postData);
+                } else
+                    Toast.makeText(AddNewPlacesActivity.this,
+                            "Make sure you've filled all data fields correctly", Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
                 Log.e(TAG, "Error adding place : " + ex.getMessage());
             }
@@ -141,10 +157,6 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
         buttonAddPlace = (Button) findViewById(R.id.activity_add_new_place_buttonAddPlace);
         buttonAddPlace.setOnClickListener(buttonAddPlaceOnClick);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Add New Place");
-        setSupportActionBar(toolbar);
-
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.activity_add_new_place_autoCompleteFragment);
 
@@ -167,6 +179,20 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
                 TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                         .getDisplayMetrics());
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Add New Place");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -207,14 +233,12 @@ public class AddNewPlacesActivity extends AppCompatActivity implements OnMapRead
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        Log.d(TAG, "Permission = " + Permissions.PERMISSION_ACCESS_FINE_LOCATION);
-        if (Permissions.PERMISSION_ACCESS_FINE_LOCATION)
+        if (Permissions.hasPermissions(this))
         {
             PlacesServices.getInstance().getDeviceLocation(googleMap, this);
-
         }
         else
-            Permissions.requestPermissions(this);
+            Permissions.checkPermissionsOnLoad(this);
     }
 
     @Override

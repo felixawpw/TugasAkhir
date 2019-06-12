@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,6 +72,20 @@ public class AddNewMapActivity extends AppCompatActivity {
         imageMap.setOnClickListener(galleryClickListener);
         buttonAddMap.setOnClickListener(buttonAddPlaceClickListener);
         activity = this;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Add New Floor Plan");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     Activity activity;
@@ -87,11 +102,21 @@ public class AddNewMapActivity extends AppCompatActivity {
     View.OnClickListener buttonAddPlaceClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (selectedBitmap != null)
+            if (validateInput())
                 uploadImage(selectedBitmap);
+            else
+                Toast.makeText(activity, "Make sure you've filled all data fields correctly ", Toast.LENGTH_SHORT).show();
         }
     };
 
+    public boolean validateInput() {
+        return textNama.getText().toString() != "" &&
+                textDeskripsi.getText().toString() != "" &&
+                textHeight.getText().toString() != "" &&
+                textLengthScale.getText().toString() != "" &&
+                textWidthScale.getText().toString() != "" &&
+                selectedBitmap != null;
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

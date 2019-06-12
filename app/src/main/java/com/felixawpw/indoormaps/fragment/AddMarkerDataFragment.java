@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,7 +67,26 @@ public class AddMarkerDataFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_marker_data, container, false);
         imageView = v.findViewById(R.id.fragment_marker_data_imageMap);
-        imageView.setOnTouchListener(imageMapOnTouchListener);
+        final GestureDetector gestureDetector = new GestureDetector(parentActivity, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (imageView.isReady()) {
+                    PointF sCoord = imageView.viewToSourceCoord(e.getX(), e.getY());
+                    imageView.setPin(sCoord);
+                    parentActivity.dataContainer.targetedPinX = sCoord.x;
+                    parentActivity.dataContainer.targetedPinY = sCoord.y;
+                }
+                return true;
+            }
+        });
+
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
+
         materialDesignSpinner = v.findViewById(R.id.fragment_marker_data_spinner_targeted_map);
         getMapsData();
 
@@ -136,22 +156,6 @@ public class AddMarkerDataFragment extends Fragment {
                 break;
         }
     }
-
-    View.OnTouchListener imageMapOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                imageView.setPin(new PointF(event.getX(), event.getY()));
-
-                parentActivity.dataContainer.targetedPinX = event.getX();
-                parentActivity.dataContainer.targetedPinY = event.getY();
-
-                System.out.println("Point x = " + event.getX() + " Point y = " + event.getY());
-            }
-            return true;
-        }
-    };
-
 
     public void getMapsData() {
         VolleyServices.getInstance(getContext()).httpRequest(

@@ -52,17 +52,12 @@ public class HomeActivity extends AppCompatActivity
         homeFragment = HomeFragment.newInstance(0);
         accountFragment = AccountFragment.newInstance(1);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Tabs universal");
-        setSupportActionBar(toolbar);
-
         tabs = (PagerSlidingTabStrip) findViewById(R.id.activity_tab_universal_tabs);
         pager = (ViewPager) findViewById(R.id.activity_tab_universal_pager);
 
         adapter = new MyPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         tabs.setViewPager(pager);
-
         final int pageMargin = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                         .getDisplayMetrics());

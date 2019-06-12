@@ -17,7 +17,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="10dp"
-        android:hint="Select Targeted Stair Map" />
+        android:hint="Select Targeted Stair Map"
+        android:textColor="@color/quantum_black_text" />
 
     <View
         android:layout_width="match_parent"
@@ -46,8 +47,8 @@
     <com.felixawpw.indoormaps.view.PinView
         android:id="@+id/fragment_marker_data_imageMap"
         style="@style/mainPanel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
         android:layout_gravity="center" />
 
 </LinearLayout>

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.felixawpw.indoormaps.AccountActivity;
 import com.felixawpw.indoormaps.AddedPlacesActivity;
 import com.felixawpw.indoormaps.CalibrateActivity;
+import com.felixawpw.indoormaps.CalibrateScanPointActivity;
+import com.felixawpw.indoormaps.OwnedReportActivity;
 import com.felixawpw.indoormaps.R;
 import com.felixawpw.indoormaps.view.MaterialRippleLayout;
 
@@ -28,16 +30,19 @@ import com.felixawpw.indoormaps.view.MaterialRippleLayout;
  */
 public class AccountFragment extends Fragment implements View.OnClickListener{
     public static final String TAG = AccountFragment.class.getSimpleName();
-    MaterialRippleLayout linkAccount, linkAddedPlaces, linkHistory, linkCalibrate, linkSignOut;
+    MaterialRippleLayout linkReport, linkAddedPlaces, linkScanPoint, linkSignOut;
     private OnFragmentInteractionListener mListener;
-    TextView textAccount, textAddedPlaces, textHistory, textCalibrate, textSignOut;
+    TextView textReport, textAddedPlaces, textScanPoint, textSignOut;
 
     @Override
     public void onClick(View v) {
         Intent intent = null;
         switch (v.getId()) {
-            case R.id.fragment_account_text_accounts:
-                intent = new Intent(getContext(), AccountActivity.class);
+            case R.id.fragment_account_text_report:
+                intent = new Intent(getContext(), OwnedReportActivity.class);
+                break;
+            case R.id.fragment_account_text_calibrate_scan_point:
+                intent = new Intent(getContext(), CalibrateScanPointActivity.class);
                 break;
             case R.id.fragment_account_text_added_places:
                 intent = new Intent(getContext(), AddedPlacesActivity.class);
@@ -73,16 +78,20 @@ public class AccountFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_account, container, false);
-        linkAccount = (MaterialRippleLayout) v.findViewById(R.id.fragment_account_link_accounts);
+        linkReport = (MaterialRippleLayout) v.findViewById(R.id.fragment_account_link_reports);
         linkAddedPlaces = (MaterialRippleLayout)v.findViewById(R.id.fragment_account_link_added_places);
         linkSignOut = (MaterialRippleLayout)v.findViewById(R.id.fragment_account_link_signout);
+        linkScanPoint = (MaterialRippleLayout)v.findViewById(R.id.fragment_account_link_calibrate_scan_point);
 
-        textAccount = (TextView) v.findViewById(R.id.fragment_account_text_accounts);
+        textReport = (TextView) v.findViewById(R.id.fragment_account_text_report);
         textAddedPlaces = (TextView)v.findViewById(R.id.fragment_account_text_added_places);
         textSignOut = (TextView)v.findViewById(R.id.fragment_account_text_signout);
+        textScanPoint = (TextView)v.findViewById(R.id.fragment_account_text_calibrate_scan_point);
 
-        linkAccount.setOnClickListener(this);
+        linkReport.setOnClickListener(this);
         linkAddedPlaces.setOnClickListener(this);
+        linkScanPoint.setOnClickListener(this);
+        linkSignOut.setOnClickListener(this);
 //        textAccount.setOnClickListener(this);
         return v;
     }

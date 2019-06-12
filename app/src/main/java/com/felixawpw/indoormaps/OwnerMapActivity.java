@@ -21,6 +21,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -92,6 +93,7 @@ public class OwnerMapActivity extends AppCompatActivity {
     private ArrayList<Marker> markerData;
     Button buttonAddMarker;
     PointF startDummy = new PointF(538, 248);
+    int showMarkerOnStartId = -1;
 
     public Marker getMarkerDataByIndex(int position) {
         return markerData.get(position);
@@ -129,6 +131,10 @@ public class OwnerMapActivity extends AppCompatActivity {
                 intent.getFloatExtra("scaleWidth", 0f),
                 intent.getFloatExtra("scaleLength", 0f)
         );
+        if (intent.hasExtra("show_on_start_marker_id")) {
+            showMarkerOnStartId = intent.getIntExtra("show_on_start_marker_id", -1);
+        }
+
 
         context = this;
         imagePlan = findViewById(R.id.activity_owner_map_view_image_plan);
@@ -137,6 +143,9 @@ public class OwnerMapActivity extends AppCompatActivity {
         searchField = (EditText) findViewById(R.id.activity_owner_map_search_field);
         buttonAddMarker = findViewById(R.id.activity_owner_map_view_button_add_marker);
         buttonAddMarker.setOnClickListener(buttonAddMarkerListener);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(map.getNama());
 
         loadMapImage(map);
         loadArrayMapData(map);
@@ -173,7 +182,8 @@ public class OwnerMapActivity extends AppCompatActivity {
                             e.getY());
                     Log.i(TAG, "Selected plan index = " + selectedPlanIndex);
                     Marker nearestMarker = findNearestMarker(sCoord);
-                    showMarkerDetailDialog(nearestMarker.getId());
+                    if (nearestMarker != null)
+                        showMarkerDetailDialog(nearestMarker.getId());
                 }
                 return true;
             }
@@ -223,6 +233,18 @@ public class OwnerMapActivity extends AppCompatActivity {
                 null);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void handleResponse(int requestId, JSONObject response) {
         try {
             switch (requestId) {
@@ -247,6 +269,8 @@ public class OwnerMapActivity extends AppCompatActivity {
                             mMarkerListAdapter.addAll(list);
                             appearanceAnimate(0);
                         }
+                        if (showMarkerOnStartId != -1)
+                            showMarkerDetailDialog(showMarkerOnStartId);
                     } catch (JSONException ex) {
                         Log.e(TAG, "Error handling response : " + ex.getMessage());
                     }

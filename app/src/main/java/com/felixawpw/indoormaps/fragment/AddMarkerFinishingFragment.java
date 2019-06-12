@@ -53,6 +53,11 @@ public class AddMarkerFinishingFragment extends Fragment {
         layoutTargetedMap = v.findViewById(R.id.fragment_add_marker_finishing_layoutTargetedMap);
         textSecondImageTitle = v.findViewById(R.id.fragment_add_marker_finishing_text_second_image_title);
         parentActivity.dataContainer.notifyChanges(this);
+
+        textName.setEnabled(false);
+        textDescription.setEnabled(false);
+        textType.setEnabled(false);
+
         return v;
     }
 

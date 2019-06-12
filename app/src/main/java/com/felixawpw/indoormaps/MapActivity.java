@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
@@ -23,6 +24,7 @@ import android.util.LruCache;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -44,6 +46,7 @@ import com.felixawpw.indoormaps.adapter.MarkerAdapter;
 import com.felixawpw.indoormaps.adapter.MarkerListAdapter;
 import com.felixawpw.indoormaps.barcode.BarcodeCaptureActivity;
 import com.felixawpw.indoormaps.dialog.LoadingDialog;
+import com.felixawpw.indoormaps.dialog.ReportDialog;
 import com.felixawpw.indoormaps.font.RobotoTextView;
 import com.felixawpw.indoormaps.fragment.HomeFragment;
 import com.felixawpw.indoormaps.fragment.MapListFragment;
@@ -84,7 +87,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MapActivity extends AppCompatActivity {
-
+    float orientation = -1f;
     public static final String TAG = MapActivity.class.getSimpleName();
     private Toolbar toolbar;
     public static String placeId = null;
@@ -99,6 +102,8 @@ public class MapActivity extends AppCompatActivity {
     private ArrayList<Marker> markerData;
     public static final int BARCODE_READER_REQUEST_CODE = 1;
     LoadingDialog firstLoadDialog;
+    RobotoTextView textReport;
+    int tenantId = 1;
 
     PointF startDummy = new PointF(538, 248);
 
@@ -120,15 +125,25 @@ public class MapActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         placeId = intent.getStringExtra("placeId");
+        String placeName = intent.getStringExtra("placeName");
 
         context = this;
         layoutFloorPlans = findViewById(R.id.activity_map_view_layout_floor_plans);
         imagePlan = findViewById(R.id.activity_map_view_image_plan);
-        requestMapsFromServer();
-
+        textReport = findViewById(R.id.activity_map_text_report);
         mDynamicListView = (DynamicListView) findViewById(R.id.activity_map_list_view);
         mainLayout = findViewById(R.id.activity_map_main_layout);
         searchField = (EditText) findViewById(R.id.activity_map_search_field);
+        textReport.setPaintFlags(textReport.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        requestMapsFromServer();
+
+        textReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReportDialog dialog = new ReportDialog(MapActivity.this, tenantId, markerData);
+                dialog.show();
+            }
+        });
 
         markerData = new ArrayList<>();
         //Implement Search
@@ -148,7 +163,7 @@ public class MapActivity extends AppCompatActivity {
                 if (mMarkerListAdapter != null) {
                     mMarkerListAdapter.getFilter().filter(s);
                 } else {
-                    Log.d(TAG, "no filter availible");
+                    Log.d(TAG, "no filter available");
                 }
             }
         });
@@ -161,7 +176,9 @@ public class MapActivity extends AppCompatActivity {
                             e.getY());
                     Log.i(TAG, "Selected plan index = " + selectedPlanIndex);
                     Marker nearestMarker = findNearestMarker(sCoord);
-                    showMarkerDetailDialog(nearestMarker.getId());
+
+                    if (nearestMarker != null)
+                        showMarkerDetailDialog(nearestMarker.getId());
                 }
                 return true;
             }
@@ -175,6 +192,20 @@ public class MapActivity extends AppCompatActivity {
 
         mainLayout.requestFocus();
         getAllMarkers();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(placeName);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
     //</editor-fold>
 
@@ -230,6 +261,7 @@ public class MapActivity extends AppCompatActivity {
                         maps = new Map[mapsJson.length()];
 
                         for (int i = 0; i < mapsJson.length(); i++) {
+                            this.tenantId = mapsJson.getJSONObject(i).getInt("tenant_id");
                             maps[i] = new Map(mapsJson.getJSONObject(i));
                             loadMapImage(maps[i]);
                             loadArrayMapData(maps[i]);
@@ -362,7 +394,6 @@ public class MapActivity extends AppCompatActivity {
                 drawable.setStroke(5, getResources().getColor(R.color.main_color_500));
                 drawable.setColor(getResources().getColor(R.color.main_color_500_50_percent));
                 button.setBackground(drawable);
-
                 prevSelectedPlan = button;
                 LoadImage loadImage = new LoadImage(imagePlan, plan, true);
                 loadImage.execute(VolleyServices.LOAD_MAP_IMAGE_BY_ID + plan.getId());
@@ -547,7 +578,7 @@ public class MapActivity extends AppCompatActivity {
             spDialog.setCancelable(true);
             spDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            spDialog.getWindow().setGravity(Gravity.BOTTOM);
+            spDialog.getWindow().setGravity(Gravity.TOP);
             spDialog.show();
         } else {
             spDialog.show();
@@ -594,6 +625,8 @@ public class MapActivity extends AppCompatActivity {
                             showMarkerDetailDialog(markerId);
                         }
                     }
+                    orientation = data.getFloatExtra("orientation", -1f);
+
                     Log.i(TAG, "Barcode data = " + barcode.displayValue);
                 } else {
                     Log.e(TAG, "Error getting data " + CommonStatusCodes.getStatusCodeString(resultCode));
@@ -607,7 +640,7 @@ public class MapActivity extends AppCompatActivity {
         ImageCustom imageData = map.getCustomImage();
         ProcessedImage pImage = new ProcessedImage(imageData, map.getArrayData());
         GridMap gridMap = new GridMap(pImage, imageData);
-        Agent agent = new Agent(gridMap, startingMarker, imagePlan, maps, this);
+        Agent agent = new Agent(gridMap, startingMarker, imagePlan, maps, this, orientation);
         agent.execute(end);
         createLoadingDialog();
     }

@@ -21,7 +21,7 @@ import com.felixawpw.indoormaps.navigation.ImageCustom;
 import com.felixawpw.indoormaps.util.CacheManager;
 import com.felixawpw.indoormaps.view.PinView;
 
-public class LoadImage  extends AsyncTask<String, String, Bitmap> {
+public class LoadImage extends AsyncTask<String, String, Bitmap> {
     private final static String TAG = "AsyncTaskLoadImage";
     private SubsamplingScaleImageView imageView;
     private PointF pin;
@@ -60,7 +60,7 @@ public class LoadImage  extends AsyncTask<String, String, Bitmap> {
             switch (type) {
                 case 3:
                     Bitmap cachedMap = CacheManager.getInstance().getBitmapFromMemCache(CacheManager.CACHE_MAP_KEY_PREFIX + map.getId());
-                    if (cachedMap != null) {
+                    if (cachedMap != null && cached) {
                         bitmap = cachedMap;
                         Log.i(TAG, "Map is cached");
                     }

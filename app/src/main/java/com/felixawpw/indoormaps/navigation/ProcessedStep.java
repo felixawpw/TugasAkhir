@@ -58,6 +58,7 @@ public class ProcessedStep {
                 break;
         }
 
+        heading %= 360;
         String result = String.format("Head to %s for %s meter(s)", Math.round(heading), (double)Math.round(distance * 100) / 100);
         return result;
     }

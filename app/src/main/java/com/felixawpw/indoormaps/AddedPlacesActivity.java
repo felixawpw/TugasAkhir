@@ -10,6 +10,7 @@ import com.android.volley.Request;
 import com.felixawpw.indoormaps.adapter.ParallaxTravelAdapter;
 import com.felixawpw.indoormaps.mirror.Tenant;
 import com.felixawpw.indoormaps.model.TenantModel;
+import com.felixawpw.indoormaps.services.AuthServices;
 import com.felixawpw.indoormaps.services.VolleyServices;
 import com.felixawpw.indoormaps.view.pzv.PullToZoomListViewEx;
 
@@ -35,14 +36,15 @@ public class AddedPlacesActivity extends AppCompatActivity {
 //        listView.setAdapter(new ParallaxTravelAdapter(this, getDummyModelListTravel(), false));
 
         getPlacesData();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Your Places");
 
-        getSupportActionBar().hide();
     }
-
 
     //<editor-fold desc="VOLLEY SERVICES" defaultstate="collapsed">
     public static final int GET_PLACES_DATA_BY_UID = 1;
-    public static final String GET_PLACES_DATA_BY_UID_ADDRESS = VolleyServices.ADDRESS_DEFAULT + "external/tenant/by_user_id/1";
+    public static final String GET_PLACES_DATA_BY_UID_ADDRESS =
+            VolleyServices.ADDRESS_DEFAULT + "external/tenant/by_user_id/" + AuthServices.getInstance().getUser().getId();
     List<Tenant> tenantsData = new ArrayList<>();
 
     public void handleResponse(int requestId, JSONObject response) {

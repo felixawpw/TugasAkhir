@@ -29,14 +29,14 @@
 
             <com.felixawpw.indoormaps.view.FloatLabeledEditText
                 android:id="@+id/fragment_set_marker_nama"
+                app:fletFloatingHint="Marker Name"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:fletFloatingHint="Marker Name"
-                app:fletHintTextColor="@color/main_color_grey_300"
+                app:fletHintTextColor="@color/quantum_black_hint_text"
                 app:fletSingleLine="true"
-                app:fletTextBackground="@drawable/edit_text_background_accent"
-                app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+                app:fletTextColor="@color/quantum_black_text"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
 
         </LinearLayout>
         <LinearLayout
@@ -54,16 +54,17 @@
                 tools:ignore="DuplicateIds" />
 
             <com.felixawpw.indoormaps.view.FloatLabeledEditText
+                app:fletFloatingHint="Marker Description"
                 android:id="@+id/fragment_set_marker_deskripsi"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:fletFloatingHint="Marker Description"
-                app:fletHintTextColor="@color/main_color_grey_300"
+                app:fletHintTextColor="@color/quantum_black_hint_text"
                 app:fletSingleLine="true"
-                app:fletTextBackground="@drawable/edit_text_background_accent"
-                app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+                app:fletTextColor="@color/quantum_black_text"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,8 +121,8 @@
             <com.felixawpw.indoormaps.view.PinView
                 android:id="@+id/fragment_set_marker_imageMap"
                 style="@style/mainPanel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
                 android:layout_gravity="center" />
 
         </LinearLayout>

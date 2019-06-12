@@ -96,8 +96,7 @@ public class PlacesServices {
          * cases when a location is not available.
          */
         try {
-            Log.d(TAG, "Permission = " + Permissions.PERMISSION_ACCESS_FINE_LOCATION);
-            if (Permissions.PERMISSION_ACCESS_FINE_LOCATION) {
+            if (Permissions.hasPermissions(baseActivity)) {
                 Task locationResult = mFusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(baseActivity, new OnCompleteListener() {
                     @Override

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -82,7 +83,6 @@ public class AddMarkerSetFragment extends Fragment {
     }
 
     public void addListeners() {
-        imageView.setOnTouchListener(imageMapOnTouchListener);
 
         spinnerMarkerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -148,22 +148,26 @@ public class AddMarkerSetFragment extends Fragment {
                 parentActivity.dataContainer.description = s.toString();
             }
         });
-    }
 
-
-
-    View.OnTouchListener imageMapOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                imageView.setPin(new PointF(event.getX(), event.getY()));
-
-                parentActivity.dataContainer.pinX = event.getX();
-                parentActivity.dataContainer.pinY = event.getY();
+        final GestureDetector gestureDetector = new GestureDetector(parentActivity, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (imageView.isReady()) {
+                    PointF sCoord = imageView.viewToSourceCoord(e.getX(), e.getY());
+                    imageView.setPin(sCoord);
+                    parentActivity.dataContainer.pinX = sCoord.x;
+                    parentActivity.dataContainer.pinY = sCoord.y;
+                }
+                return true;
             }
-            return true;
-        }
-    };
+        });
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
+    }
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

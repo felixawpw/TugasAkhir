@@ -21,7 +21,9 @@ public class Marker {
     private int markerType;
     private int mapId;
     private int targetedMarkerId;
-
+    private float heading;
+    private int calibrate_x;
+    private int calibrate_y;
     public Marker() {
 
     }
@@ -36,6 +38,12 @@ public class Marker {
         this.setMapId(data.getInt("map_id"));
         if (data.get("connecting_marker_id") != JSONObject.NULL)
             this.setTargetedMarkerId(data.getInt("connecting_marker_id"));
+        if (data.get("heading") != JSONObject.NULL)
+            this.heading = ((float)data.getDouble("heading"));
+        if (data.get("calibrate_x") != JSONObject.NULL)
+            this.calibrate_x = data.getInt("calibrate_x");
+        if (data.get("calibrate_y") != JSONObject.NULL)
+            this.calibrate_y = data.getInt("calibrate_y");
     }
 
     public String getName() {
@@ -100,5 +108,34 @@ public class Marker {
 
     public void setTargetedMarkerId(int targetedMarkerId) {
         this.targetedMarkerId = targetedMarkerId;
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
+
+    public float getHeading() {
+        return heading;
+    }
+
+    public void setHeading(float heading) {
+        this.heading = heading;
+    }
+
+    public int getCalibrate_x() {
+        return calibrate_x;
+    }
+
+    public void setCalibrate_x(int calibrate_x) {
+        this.calibrate_x = calibrate_x;
+    }
+
+    public int getCalibrate_y() {
+        return calibrate_y;
+    }
+
+    public void setCalibrate_y(int calibrate_y) {
+        this.calibrate_y = calibrate_y;
     }
 }

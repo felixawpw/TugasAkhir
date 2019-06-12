@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            android:text="@string/material_icon_share"
+            android:text="@string/fontello_play"
             android:textColor="@color/main_color_500"
             android:textSize="20dp" />
     </LinearLayout>

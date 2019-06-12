@@ -3,7 +3,11 @@ package com.felixawpw.indoormaps.mirror;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Tenant {
+import java.io.Serializable;
+
+public class Tenant implements Serializable {
+    private static final long serialVersionUID = 75263295622776147L;
+
     private int id;
     private String nama;
     private String googleMapsId;

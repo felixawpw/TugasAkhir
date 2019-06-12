@@ -3,7 +3,9 @@ package com.felixawpw.indoormaps.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +76,11 @@ public class TenantAdapter extends ArrayAdapter<TenantModel>
         convertView.setOnClickListener(this);
         ImageUtil.displayRoundImage(holder.image, dm.getImageURL(), null);
         holder.text.setText(dm.getText());
-        holder.textAlamat.setText(dm.getTenant().getGoogleMapsAddress());
-        holder.icon.setText(dm.getIconRes());
+        if (dm.getTenant() != null) {
+            holder.textAlamat.setText(dm.getTenant().getGoogleMapsAddress());
+        }
+
+        holder.icon.setText(R.string.fontello_play);
         return convertView;
     }
 
@@ -94,6 +99,13 @@ public class TenantAdapter extends ArrayAdapter<TenantModel>
         int position = (Integer) v.getTag(R.id.map_activity_marker_id);
         if (activity instanceof HomeFragment) {
             TenantModel model = items.get(position);
+            try {
+                ((HomeFragment)activity).placeData.writeHistory(model.getTenant(), HomeFragment.SEARCH_HISTORY_FILE_NAME);
+            } catch (Exception ex) {
+                Log.e("TenantAdapter", "Fail writing file " + ex.getMessage());
+                ex.printStackTrace();
+            }
+
             Intent intent = new Intent(context, MapActivity.class);
             intent.putExtra("placeId", model.getTenant().getGoogleMapsId());
             intent.putExtra("placeName", model.getTenant().getNama());

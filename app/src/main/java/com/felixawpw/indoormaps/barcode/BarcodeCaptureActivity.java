@@ -37,6 +37,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.felixawpw.indoormaps.util.SensorHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -65,7 +66,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity
 
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
-
+    SensorHelper sensorHelper;
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -78,6 +79,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity
 
         boolean autoFocus = true;
         boolean useFlash = false;
+        sensorHelper = new SensorHelper(this, null);
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
@@ -92,8 +94,18 @@ public final class BarcodeCaptureActivity extends AppCompatActivity
     @Override
     public void onDetectedQrCode(Barcode barcode) {
         if (barcode != null) {
+
+            float orientation = 0;
+            long startTime = System.currentTimeMillis();
+            int counter = 1;
+            while (System.currentTimeMillis() - startTime < 1000) {
+                orientation = (orientation * (counter - 1) + (float)sensorHelper.showOrientation())/counter;
+                counter++;
+            }
+
             Intent intent = new Intent();
             intent.putExtra(BarcodeObject, barcode);
+            intent.putExtra("orientation", orientation);
             setResult(CommonStatusCodes.SUCCESS, intent);
             finish();
         }
@@ -182,6 +194,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         startCameraSource();
+        sensorHelper = new SensorHelper(this, null);
     }
 
     // Stops the camera
@@ -190,6 +203,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity
         super.onPause();
         if (mPreview != null) {
             mPreview.stop();
+            sensorHelper.destroy();
         }
     }
 
@@ -202,6 +216,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity
         super.onDestroy();
         if (mPreview != null) {
             mPreview.release();
+            sensorHelper.destroy();
         }
     }
 

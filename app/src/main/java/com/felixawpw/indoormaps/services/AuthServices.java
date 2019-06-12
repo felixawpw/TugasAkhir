@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.felixawpw.indoormaps.SplashScreenActivity;
+import com.felixawpw.indoormaps.mirror.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -27,6 +28,8 @@ public class AuthServices {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private User user;
+
     private AuthServices() {
         mAuth = FirebaseAuth.getInstance();
     }
@@ -40,11 +43,11 @@ public class AuthServices {
     }
 
     public void checkUserStatus(Activity baseActivity) {
-        mUser = mAuth.getCurrentUser();
-        Log.d(TAG, mUser == null ? "User is not logged in" : String.format("Logged in : %s - %s", mUser.getDisplayName(), mUser.getUid()));
+        setmUser(mAuth.getCurrentUser());
+        Log.d(TAG, getmUser() == null ? "User is not logged in" : String.format("Logged in : %s - %s", getmUser().getDisplayName(), getmUser().getUid()));
 
         if (baseActivity instanceof SplashScreenActivity)
-            ((SplashScreenActivity)baseActivity).updateUI(mUser);
+            ((SplashScreenActivity)baseActivity).updateUI(getmUser());
     }
 
     public void firebaseAuthWithGoogle(GoogleSignInAccount acct, final Activity baseActivity) {
@@ -65,5 +68,21 @@ public class AuthServices {
                     }
                 }
             });
+    }
+
+    public FirebaseUser getmUser() {
+        return mUser;
+    }
+
+    public void setmUser(FirebaseUser mUser) {
+        this.mUser = mUser;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

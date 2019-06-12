@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.android.volley.Request;
 import com.felixawpw.indoormaps.adapter.ImageGallerySubcategoryAdapter;
+import com.felixawpw.indoormaps.font.RobotoTextView;
 import com.felixawpw.indoormaps.mirror.Map;
 import com.felixawpw.indoormaps.mirror.Tenant;
 import com.felixawpw.indoormaps.model.MapsModel;
@@ -25,7 +26,6 @@ import java.util.List;
 public class AddedPlaceDetailsActivity extends AppCompatActivity {
     public static final String TAG = AddedPlaceDetailsActivity.class.getSimpleName();
     Tenant tenant;
-
     private ListView mListView;
     private boolean mIsLayoutOnTop;
 
@@ -47,6 +47,9 @@ public class AddedPlaceDetailsActivity extends AppCompatActivity {
 
         getMapsData();
         Log.i(TAG, "Tenant data = " + tenant.getId() + " : " + tenant.getNama() + " : " + tenant.getGoogleMapsId());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(tenantName);
+
     }
 
 
@@ -76,7 +79,7 @@ public class AddedPlaceDetailsActivity extends AppCompatActivity {
                     MapsModel mapsModel = new MapsModel();
                     mapsModel.setId(0);
                     mapsModel.setTitle("Add New");
-                    mapsModel.setUrl("http://pengaja.com/uiapptemplate/dogs/14250733433_271362f4ff_h.jpg");
+                    mapsModel.setUrl("https://cdn2.iconfinder.com/data/icons/rounded-white-basic-ui-set-3/139/Photo_Add-RoundedWhite-512.png");
                     mapsModel.setMap(null);
                     list.add(mapsModel);
                     mListView.setAdapter(new ImageGallerySubcategoryAdapter(this, list, mIsLayoutOnTop, tenant, this));

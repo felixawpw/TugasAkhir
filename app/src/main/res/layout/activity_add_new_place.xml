@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_margin="8dp"
     tools:context=".AddNewPlacesActivity">
-
-    <include layout="@layout/toolbar" />
 
     <fragment android:id="@+id/activity_add_new_place_autoCompleteFragment"
         android:layout_width="0dp"
@@ -40,7 +39,7 @@
             app:fletHintTextColor="@color/main_color_grey_300"
             app:fletSingleLine="true"
             app:fletTextBackground="@drawable/edit_text_background_accent"
-            app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+            app:fletTextColor="@color/main_color_grey_700"/>
 
     </LinearLayout>
 
@@ -70,7 +69,7 @@
             app:fletHintTextColor="@color/main_color_grey_300"
             app:fletSingleLine="true"
             app:fletTextBackground="@drawable/edit_text_background_accent"
-            app:fletTextColor="@color/main_color_grey_700"></com.felixawpw.indoormaps.view.FloatLabeledEditText>
+            app:fletTextColor="@color/main_color_grey_700"/>
 
     </LinearLayout>
 
@@ -85,8 +84,10 @@
         android:id="@+id/activity_add_new_place_buttonAddPlace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:text="ADD PLACE" />
+        android:background="@drawable/button_oval"
+        android:text="Submit"
+        android:textColor="@color/quantum_white_text"
+        android:layout_marginTop="8dp"/>
 
 
 </LinearLayout>

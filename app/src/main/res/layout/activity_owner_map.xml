@@ -18,7 +18,7 @@
         <com.felixawpw.indoormaps.view.PinView
             android:id="@+id/activity_owner_map_view_image_plan"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="280dp"
             android:layout_gravity="center" />
 
         <View
@@ -89,7 +89,7 @@
             android:id="@+id/activity_owner_map_list_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_weight="8"
             />
 
         <Button

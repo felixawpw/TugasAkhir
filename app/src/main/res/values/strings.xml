@@ -11,13 +11,18 @@
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
 
 
-
     <string-array name="marker_type_array">
         <item>Public Facilities</item>
         <item>Stair up</item>
         <item>Stair down</item>
         <item>Toilet</item>
         <item>Scan Point</item>
+    </string-array>
+
+    <string-array name="report_type_array">
+        <item>Marker location is not accurate</item>
+        <item>Different marker name</item>
+        <item>Other</item>
     </string-array>
 
     <!-- Defined String Resources-->

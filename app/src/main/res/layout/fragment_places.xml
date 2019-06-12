@@ -46,6 +46,17 @@
         tools:ignore="SpUsage" />
 </LinearLayout>
 
+    <TextView
+        android:id="@+id/text_search_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="10dp"
+        android:textSize="15dp"
+        android:textColor="@color/material_red_500"
+        android:text="Recent searches (double click to clear)"/>
     <View
         android:id="@+id/activity_map_view_element"
         android:layout_width="match_parent"

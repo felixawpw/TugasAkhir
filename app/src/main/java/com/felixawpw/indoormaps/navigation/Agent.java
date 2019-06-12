@@ -11,9 +11,11 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.felixawpw.indoormaps.MapActivity;
+import com.felixawpw.indoormaps.dialog.CompassDialog;
 import com.felixawpw.indoormaps.dialog.RoutesDialog;
 import com.felixawpw.indoormaps.mirror.Map;
 import com.felixawpw.indoormaps.mirror.Marker;
@@ -38,12 +40,13 @@ public class Agent extends AsyncTask<Marker, String, List<Path>> {
     Marker startPoint;
     public static final String TAG = Agent.class.getSimpleName();
     Activity activity;
+    float orientation;
 
     public Agent() {
 
     }
 
-    public Agent(GridMap map, Marker startPoint, PinView imagePlan, Map[] maps, Activity activity) {
+    public Agent(GridMap map, Marker startPoint, PinView imagePlan, Map[] maps, Activity activity, float orientation) {
         this.startPoint = startPoint;
         this.currX = startPoint.getPointX();
         this.currY = startPoint.getPointY();
@@ -51,6 +54,7 @@ public class Agent extends AsyncTask<Marker, String, List<Path>> {
         this.imagePlan = imagePlan;
         this.maps = maps;
         this.activity = activity;
+        this.orientation = orientation;
     }
 
 //    public void searchStairs(Marker start, Marker destination) {
@@ -148,8 +152,10 @@ public class Agent extends AsyncTask<Marker, String, List<Path>> {
         ((MapActivity)activity).closeLoadingDialog();
 
         if (paths != null) {
-            RoutesDialog dialog = new RoutesDialog(activity, maps, paths);
+            RoutesDialog dialog = new RoutesDialog(activity, maps, paths, orientation, startPoint);
+            CompassDialog compassDialog = new CompassDialog(activity);
             dialog.show();
+            compassDialog.show();
 
 //            System.out.println("Steps = " + path.steps.size());
 //            for (Object step : path.steps) {
@@ -158,6 +164,6 @@ public class Agent extends AsyncTask<Marker, String, List<Path>> {
 //            }
         }
         else
-            System.err.println("Cannot find path");
+            Toast.makeText(activity, "Cannot find path", Toast.LENGTH_SHORT).show();
     }
 }

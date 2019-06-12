@@ -104,7 +104,7 @@ public class MarkerAdapter extends ArrayAdapter<MarkerModel> implements View.OnC
 		if (mShouldShowDragAndDropIcon) {
 			holder.icon.setText(R.string.fontello_drag_and_drop);
 		} else {
-			holder.icon.setText(dm.getIconRes());
+			holder.icon.setText(R.string.fontello_play);
 		}
 		return convertView;
 	}

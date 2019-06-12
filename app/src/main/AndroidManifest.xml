@@ -31,9 +31,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".barcode.BarcodeCaptureActivity"
-
-            />
+        <activity android:name=".barcode.BarcodeCaptureActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -45,8 +43,7 @@
         <activity
             android:name=".AddNewPlacesActivity"
             android:label="@string/app_name"
-            android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:noHistory="true" />
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,14 +70,28 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".AccountActivity" />
+        <activity
+            android:name=".AccountActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddedPlacesActivity" />
         <activity android:name=".AddedPlaceDetailsActivity" />
-        <activity android:name=".CalibrateActivity" />
+        <activity
+            android:name=".CalibrateActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddNewMapActivity" />
-        <activity android:name=".MapOwnerActivity" />
+        <activity
+            android:name=".MapOwnerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddMarkerWizardActivity" />
-        <activity android:name=".ScanPointDetailActivity"></activity>
+        <activity
+            android:name=".ScanPointDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SensorTestingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".OwnedReportActivity" />
+        <activity
+            android:name=".CalibrateScanPointActivity" />
     </application>
 
 </manifest>

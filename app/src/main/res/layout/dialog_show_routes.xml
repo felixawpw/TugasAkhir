@@ -48,6 +48,7 @@
         android:textSize="24sp"
         android:text="Location Name"
         android:gravity="center"
+        android:textColor="@color/quantum_black_text"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"/>
@@ -56,45 +57,8 @@
     <com.felixawpw.indoormaps.view.PinView
         android:id="@+id/dialog_show_routes_image_plan"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/dialog_show_routes_button_previous"
-            android:background="@drawable/button_oval"
-            android:text="Previous Floor"
-            android:textColor="@color/white"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            />
-
-        <Button
-            android:id="@+id/dialog_show_routes_button_next"
-            android:background="@drawable/button_oval"
-            android:text="Next Floor"
-            android:textColor="@color/white"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            />
-
-    </LinearLayout>
-
+        android:layout_height="279dp"
+        android:layout_gravity="center" />
 
     <View
         android:layout_width="match_parent"
@@ -126,13 +90,52 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
 
         <com.nhaarman.listviewanimations.itemmanipulation.DynamicListView
             android:id="@+id/dialog_show_routes_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/dialog_show_routes_button_previous"
+                android:background="@drawable/button_oval"
+                android:text="Previous Floor"
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                />
+
+            <Button
+                android:id="@+id/dialog_show_routes_button_next"
+                android:background="@drawable/button_oval"
+                android:text="Next Floor"
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 

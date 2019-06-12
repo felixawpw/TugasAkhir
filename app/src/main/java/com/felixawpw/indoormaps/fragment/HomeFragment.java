@@ -55,9 +55,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.security.Permission;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -84,6 +94,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     Context context;
     LinearLayout mainLayout;
     EditText searchField;
+    public static final String SEARCH_HISTORY_FILE_NAME = "home_fragment_search_history_cache";
 
     public HomeFragment() {
         // Required empty public constructor
@@ -174,13 +185,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     public class PlacesListData {
         private TenantAdapter mTenantListAdapter;
-        Context context;
+        Context mContext;
         private EditText searchField;
         DynamicListView listView;
-
+        TextView textSearchHistory;
+        int clickCounter = 0;
         public PlacesListData(View v, Context context) {
             // Inflate the layout for this fragment
             searchField = (EditText) v.findViewById(R.id.fragment_places_search_field);
+            listView = v.findViewById(R.id.fragment_places_list_view);
+            textSearchHistory = v.findViewById(R.id.text_search_history);
+            final Timer t = new Timer();
+            textSearchHistory.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickCounter++;
+
+                    Timer t = new Timer();
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            clickCounter = 0;
+                            t.cancel();
+                            t.purge();
+                        }
+                    }, 1000L);
+
+                    if (clickCounter == 2) {
+                        try {
+                            clearHistory(SEARCH_HISTORY_FILE_NAME);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            Log.e(TAG, "Error clearing history " + ex.getMessage());
+                        }
+                    }
+                }
+            });
+
             //Implement Search
             searchField.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -230,10 +271,86 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }
             });
-
-            listView = v.findViewById(R.id.fragment_places_list_view);
-            setEmptyListView(listView);
+            mContext = context;
+            List<TenantModel> models = new ArrayList<>();
+            try {
+                readHistory(HomeFragment.SEARCH_HISTORY_FILE_NAME);
+                Log.d(TAG, "Tenant = " + histories.size());
+                int i = 0;
+                for (Tenant tenant : histories) {
+                    models.add(new TenantModel(i+1,
+                            "http://chittagongit.com//images/new-location-icon/new-location-icon-4.jpg",
+                            tenant.getNama(),
+                            R.string.fontello_heart_empty,
+                            tenant));
+                }
+            } catch (Exception ex) {
+                Log.e(TAG, "Fail reading file " + ex.getMessage());
+                ex.printStackTrace();
+            }
             mTenantListAdapter = new TenantAdapter(context, new ArrayList<TenantModel>(), HomeFragment.this);
+            if (histories.size() == 0) {
+                setEmptyListView(listView);
+            }
+            else {
+                textSearchHistory.setVisibility(View.VISIBLE);
+                mTenantListAdapter = new TenantAdapter(context, models, HomeFragment.this);
+                appearanceAnimate(0);
+            }
+        }
+
+        List<Tenant> histories = new ArrayList<>();
+
+        public void readHistory(String fileName) throws Exception {
+            FileInputStream fis = mContext.openFileInput(fileName);
+            if (fis != null) {
+                ObjectInputStream is = new ObjectInputStream(fis);
+                histories = (List<Tenant>)is.readObject();
+                if (histories == null)
+                    histories = new ArrayList<>();
+                is.close();
+                fis.close();
+            } else
+                histories = new ArrayList<>();
+        }
+
+        public void writeHistory(Tenant tenant, String fileName) throws Exception {
+            try {
+                readHistory(fileName);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            FileOutputStream fos = mContext.openFileOutput(fileName, Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            Set<Integer> duplicateSet = new HashSet<>();
+            for (Tenant ttt : histories)
+                duplicateSet.add(ttt.getId());
+
+            if (!duplicateSet.contains(tenant.getId())) {
+                histories.add(tenant);
+            } else {
+                for (int i =0 ; i < histories.size(); i++) {
+                    if (histories.get(i).getId() == tenant.getId()) {
+                        histories.remove(i);
+                        break;
+                    }
+                }
+                histories.add(tenant);
+            }
+            Collections.reverse(histories);
+            os.writeObject(histories);
+            os.close();
+            fos.close();
+        }
+
+        public void clearHistory(String fileName) throws Exception{
+            FileOutputStream fos = mContext.openFileOutput(fileName, Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.close();
+            fos.close();
+
+            mTenantListAdapter.clear();
+            setEmptyListView(listView);
         }
 
         //<editor-fold desc="VOLLEY SERVICES" defaultstate="collapsed">
@@ -259,6 +376,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                         R.string.fontello_heart_empty,
                                         tenant));
                             }
+                            textSearchHistory.setVisibility(View.INVISIBLE);
                             mTenantListAdapter.addAll(list);
                             appearanceAnimate(0);
                         }
@@ -335,16 +453,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        Log.d(TAG, "Permission Access Fine Location = " + Permissions.PERMISSION_ACCESS_FINE_LOCATION);
-        Log.d(TAG, "Permission Read External Stroage = " + Permissions.PERMISSION_READ_EXTERNAL_STORAGE);
-            //Uncomment
-        if (Permissions.PERMISSION_ACCESS_FINE_LOCATION)
+        if (Permissions.hasPermissions(getActivity()))
         {
             PlacesServices.getInstance().getDeviceLocation(googleMap, getActivity());
             PlacesServices.getInstance().getLikelihood(getActivity(), getString(R.string.geolocation_api_key), HomeFragment.this);
         }
         else
-            Permissions.requestPermissions(getActivity());
+            Permissions.checkPermissionsOnLoad(getActivity());
     }
 
     public void onButtonPressed(Uri uri) {

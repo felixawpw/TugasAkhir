@@ -1,11 +1,13 @@
 package com.felixawpw.indoormaps.services;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.LruCache;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -19,13 +21,19 @@ import com.felixawpw.indoormaps.AddMarkerWizardActivity;
 import com.felixawpw.indoormaps.AddNewPlacesActivity;
 import com.felixawpw.indoormaps.AddedPlaceDetailsActivity;
 import com.felixawpw.indoormaps.AddedPlacesActivity;
+import com.felixawpw.indoormaps.CalibrateScanPointActivity;
 import com.felixawpw.indoormaps.MapActivity;
+import com.felixawpw.indoormaps.OwnedReportActivity;
 import com.felixawpw.indoormaps.OwnerMapActivity;
+import com.felixawpw.indoormaps.SplashScreenActivity;
+import com.felixawpw.indoormaps.adapter.ReportAdapter;
+import com.felixawpw.indoormaps.dialog.ReportDialog;
 import com.felixawpw.indoormaps.fragment.AddMarkerDataFragment;
 import com.felixawpw.indoormaps.fragment.HomeFragment;
 import com.felixawpw.indoormaps.fragment.MapListOwnerFragment;
 import com.felixawpw.indoormaps.fragment.MapViewFragment;
 import com.felixawpw.indoormaps.fragment.PlacesFragment;
+import com.felixawpw.indoormaps.mirror.Report;
 import com.google.android.gms.maps.MapView;
 import com.google.android.libraries.places.api.model.Place;
 
@@ -40,6 +48,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 
+import net.kibotu.kalmanrx.KalmanRx;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -53,7 +63,7 @@ public class VolleyServices {
     private RequestQueue requestQueue;
 //    private ImageLoader imageLoader;
     private static Context ctx;
-    public static final String ADDRESS_DEFAULT = "http://192.168.0.18/";
+    public static final String ADDRESS_DEFAULT = "http://192.168.1.20/";
     public static final String TAG = VolleyServices.class.getSimpleName();
 
     public static final String LOAD_MAP_IMAGE_BY_ID = ADDRESS_DEFAULT + "external/map/processed_map/download/";
@@ -135,12 +145,34 @@ public class VolleyServices {
                             ((MapListOwnerFragment)activity).handleResponse(requestId, response);
                         } else if (activity instanceof OwnerMapActivity) {
                             ((OwnerMapActivity)activity).handleResponse(requestId, response);
-                        }
+                        } else if (activity instanceof ReportDialog)
+                            ((ReportDialog)activity).handleResponse(requestId, response);
+                        else if (activity instanceof SplashScreenActivity)
+                            ((SplashScreenActivity)activity).handleResponse(requestId, response);
+                        else if (activity instanceof OwnedReportActivity)
+                            ((OwnedReportActivity)activity).handleResponse(requestId, response);
+                        else if (activity instanceof ReportAdapter)
+                            ((ReportAdapter)activity).handleResponse(requestId,response);
+                        else if (activity instanceof CalibrateScanPointActivity)
+                            ((CalibrateScanPointActivity)activity).handleResponse(requestId, response);
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (activity instanceof Activity)
+                            Toast.makeText((Activity)activity,
+                                "There is an error while connecting your device to our server", Toast.LENGTH_SHORT).show();
+                        else if (activity instanceof Fragment)
+                            Toast.makeText(((Fragment) activity).getActivity(),
+                                    "There is an error while connecting your device to our server", Toast.LENGTH_SHORT).show();
+                        else if (activity instanceof ReportDialog)
+                            Toast.makeText(((ReportDialog) activity).getActivity(),
+                                    "There is an error while connecting your device to our server", Toast.LENGTH_SHORT).show();
+                        else if (activity instanceof ReportAdapter)
+                            Toast.makeText(((ReportAdapter) activity).getActivity(),
+                                    "There is an error while connecting your device to our server", Toast.LENGTH_SHORT).show();
+
                         Log.e(TAG, "Error loading " + error.getMessage() + " status code = " + statusCode);
 
                     }

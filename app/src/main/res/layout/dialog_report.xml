@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:background="@color/cardview_light_background">
+
+    <com.felixawpw.indoormaps.font.RobotoTextView
+        android:layout_width="376dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="10dp"
+        android:text="Make a report"
+        android:textColor="@color/quantum_black_text"
+        android:textSize="24sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/main_color_500"/>
+
+    <com.felixawpw.indoormaps.font.RobotoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="What kind of things do you want to report? "
+        android:textColor="@color/quantum_black_hint_text"
+        android:layout_marginLeft="8dp"/>
+
+    <Spinner
+        android:id="@+id/dialog_report_spinner_report_type"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/cpb_grey"
+        android:entries="@array/report_type_array" />
+
+    <LinearLayout
+        android:id="@+id/dialog_report_layout_marker_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.felixawpw.indoormaps.font.RobotoTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="Select the marker you want to report"
+            android:textColor="@color/quantum_black_hint_text" />
+
+        <Spinner
+            android:id="@+id/dialog_report_spinner_marker_selection"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginBottom="8dp"
+            android:entries="@array/marker_type_array"
+            android:background="@color/cpb_grey"/>
+
+    </LinearLayout>
+
+    <com.felixawpw.indoormaps.font.RobotoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Provide us any details about your report"
+        android:textColor="@color/quantum_black_hint_text"
+        android:layout_marginLeft="8dp"/>
+
+    <EditText
+        android:id="@+id/dialog_report_text_detail"
+        android:layout_width="match_parent"
+        android:layout_height="210dp"
+        android:ems="10"
+        android:gravity="top"
+        android:textColorHint="@color/quantum_black_secondary_text"
+        android:hint="Help us by providing details as much as possible!"
+        android:inputType="textMultiLine" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/main_color_500"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="8dp">
+
+        <Button
+            android:id="@+id/dialog_report_button_cancel"
+            android:layout_width="125dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_oval"
+            android:text="Cancel"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/dialog_report_button_submit"
+            android:layout_width="125dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_oval"
+            android:text="Submit"
+            android:textColor="@color/white"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
